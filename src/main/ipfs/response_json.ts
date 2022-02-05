@@ -3,17 +3,18 @@ import Serializable from './serializable';
 
 export default class Response implements Serializable<Response> {
   Class = DaemonRequest.PING;
-  Msg   = "";
+
+  Msg = '';
 
   serialize(): string {
     return JSON.stringify(this);
   }
 
   deserialize(input: string): Response {
-    var data = JSON.parse(input);
+    const data = JSON.parse(input);
 
     this.Class = data.Class;
-    this.Msg   = data.Msg;
+    this.Msg = data.Msg;
 
     return this;
   }

@@ -1,8 +1,8 @@
 enum DaemonRequest {
-    ADD,
-    DELETE,
-    GET,
-    PING
+  ADD,
+  DELETE,
+  GET,
+  PING,
 }
 
 export default DaemonRequest;
