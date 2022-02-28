@@ -4,7 +4,9 @@ import {
   shell,
   BrowserWindow,
   MenuItemConstructorOptions,
+  dialog,
 } from 'electron';
+import { addIPFS, getIPFS, pingIPFS } from './ipfs/ipfs';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -251,6 +253,87 @@ export default class MenuBuilder {
                   },
                 },
               ],
+      },
+      {
+        label: 'IPFS',
+        submenu: [
+          {
+            label: 'Ping',
+            click: () => {
+              pingIPFS()
+                .then((res) => {
+                  return dialog.showMessageBox(this.mainWindow, {
+                    message: `IPFS Ping Result: ${res ? 'Success' : 'Fail'}`,
+                    type: 'info',
+                    title: 'IPFS Ping',
+                  });
+                })
+                .catch((err) => {
+                  return dialog.showErrorBox(
+                    'IPFS Add Error',
+                    `Confirm that the IPFS daemon is running.\n${err}`
+                  );
+                });
+            },
+          },
+          {
+            label: 'Add',
+            click: () => {
+              dialog
+                .showOpenDialog(this.mainWindow, {
+                  properties: ['openFile'],
+                })
+                .then((choice) => {
+                  return choice.canceled
+                    ? Promise.reject()
+                    : addIPFS(choice.filePaths[0]);
+                })
+                .then((res) => {
+                  return dialog.showMessageBox(this.mainWindow, {
+                    message: `IPFS added file with CID ${res}`,
+                    type: 'info',
+                    title: 'IPFS Add',
+                  });
+                })
+                .catch((err) => {
+                  return dialog.showErrorBox(
+                    'IPFS Add Error',
+                    `Confirm that the IPFS daemon is running.\n${err}`
+                  );
+                });
+            },
+          },
+          {
+            label: 'Get',
+            click: () => {
+              dialog
+                .showOpenDialog(this.mainWindow, {
+                  properties: ['openDirectory'],
+                })
+                .then((choice) => {
+                  return choice.canceled
+                    ? Promise.reject()
+                    : getIPFS(
+                        'QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj',
+                        choice.filePaths[0]
+                      );
+                })
+                .then((res) => {
+                  return dialog.showMessageBox(this.mainWindow, {
+                    message: `Downloaded content from IFPS. Saved as: ${res}`,
+                    type: 'info',
+                    title: 'IPFS Get',
+                  });
+                })
+                .catch((err) => {
+                  return dialog.showErrorBox(
+                    'IPFS Get Error',
+                    `Confirm that the IPFS daemon is running.\n${err}`
+                  );
+                });
+            },
+          },
+        ],
       },
       {
         label: 'Help',
