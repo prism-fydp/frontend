@@ -1,50 +1,37 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import './App.css';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import MarkdownEditor from './pages/editor';
+import Home from './pages/home';
+import MarkdownReader from './pages/reader';
 
-const Hello = () => {
+// window.electron.ipcRenderer.once('ipc-example', (arg) => {
+//   // console.log(arg);
+// });
+
+// window.electron.ipcRenderer.myPing();
+
+const NavButton = (path: string, name: string) => {
+  const navigate = useNavigate();
   return (
-    <div>
-      <div className="Hello">
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
+    <button type="button" onClick={() => navigate(path)}>
+      {name}
+    </button>
   );
 };
 
 export default function App() {
   return (
-    <Router>
+    <div className="app">
+      <div className="nav-buttons">
+        {NavButton('/md-reader', 'Read')}
+        {NavButton('/md-editor', 'Write')}
+        {NavButton('/', 'Home')}
+      </div>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/md-reader" element={MarkdownReader()} />
+        <Route path="/md-editor" element={MarkdownEditor()} />
+        <Route path="/" element={Home()} />
       </Routes>
-    </Router>
+    </div>
   );
 }
