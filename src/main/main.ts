@@ -15,7 +15,8 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { resolveHtmlPath } from './utils/resolve_html_path';
+import { read, write } from './utils/file_io';
 
 export default class AppUpdater {
   constructor() {
@@ -31,6 +32,18 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('open-file', async (event, arg) => {
+  if (typeof arg === 'string') {
+    const fileData = read(arg);
+    event.reply('open-file', fileData);
+  }
+});
+
+ipcMain.on('save-file', async (event, { data, filePath }) => {
+  console.log(`Received: ${event} ${filePath} ${data}`);
+  write(filePath, data);
 });
 
 if (process.env.NODE_ENV === 'production') {

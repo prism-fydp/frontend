@@ -7,6 +7,7 @@ import {
   dialog,
 } from 'electron';
 import { addIPFS, getIPFS, pingIPFS } from './ipfs/ipfs';
+import { read } from './utils/file_io';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -202,6 +203,51 @@ export default class MenuBuilder {
           {
             label: '&Open',
             accelerator: 'Ctrl+O',
+            click: () => {
+              dialog
+                .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
+                .then((choice) => {
+                  return choice.canceled
+                    ? Promise.reject()
+                    : choice.filePaths[0];
+                })
+                .then((filePath) => {
+                  const data = read(filePath);
+                  this.mainWindow.webContents.send('open-file', {
+                    data,
+                    filePath,
+                  });
+                  return true;
+                })
+                .catch(console.error);
+            },
+          },
+          {
+            label: '&Save',
+            accelerator: 'Ctrl+S',
+            click: () => {
+              console.log('Save');
+              this.mainWindow.webContents.send('save-file', '');
+            },
+          },
+          {
+            label: '&Save As',
+            accelerator: 'Ctrl+Shift+S',
+            click: () => {
+              console.log('Save As');
+              dialog
+                .showSaveDialog(this.mainWindow, {
+                  properties: ['createDirectory'],
+                })
+                .then((choice) => {
+                  return choice.canceled ? Promise.reject() : choice.filePath;
+                })
+                .then((filePath) => {
+                  this.mainWindow.webContents.send('save-file', filePath);
+                  return true;
+                })
+                .catch(console.error);
+            },
           },
           {
             label: '&Close',

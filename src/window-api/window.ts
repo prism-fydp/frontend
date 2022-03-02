@@ -18,6 +18,7 @@ declare global {
         // the type of their argument
         on: (channel: string, func: (...arg: unknown[]) => void) => void;
         once: (channel: string, func: (...arg: unknown[]) => void) => void;
+        send: (channel: string, ...data: unknown[]) => void;
       };
     };
   }
