@@ -219,34 +219,36 @@ export default class MenuBuilder {
                   });
                   return true;
                 })
-                .catch(console.error);
+                .catch(() => {});
             },
           },
           {
             label: '&Save',
             accelerator: 'Ctrl+S',
             click: () => {
-              console.log('Save');
-              this.mainWindow.webContents.send('save-file', '');
+              this.mainWindow.webContents.send('save-file');
             },
           },
           {
             label: '&Save As',
             accelerator: 'Ctrl+Shift+S',
             click: () => {
-              console.log('Save As');
               dialog
                 .showSaveDialog(this.mainWindow, {
                   properties: ['createDirectory'],
                 })
                 .then((choice) => {
-                  return choice.canceled ? Promise.reject() : choice.filePath;
+                  return choice.canceled || !choice.filePath
+                    ? Promise.reject()
+                    : choice.filePath;
                 })
                 .then((filePath) => {
                   this.mainWindow.webContents.send('save-file', filePath);
                   return true;
                 })
-                .catch(console.error);
+                .catch((err) => {
+                  dialog.showErrorBox('Save As Error', `${err}`);
+                });
             },
           },
           {

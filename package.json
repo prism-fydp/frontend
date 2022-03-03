@@ -158,6 +158,9 @@
     ],
     "setupFiles": [
       "./.erb/scripts/check-build-exists.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__mocks__/window_mock.ts"
     ]
   },
   "devDependencies": {

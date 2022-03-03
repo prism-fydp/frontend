@@ -1,11 +1,27 @@
+import { useEffect, useRef, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import FileProps from 'renderer/common/FileProps';
+import FileInfo from '../file_management/file_info';
+import FileManager from '../file_management/file_manager';
+import Paths from './paths';
 
-export default function MarkdownReader({ data, filePath }: FileProps) {
+/*
+ * A markdown editor. Markdown text to render is provided in the props.
+ */
+export default function MarkdownReader() {
+  const [fileInfo, setFileInfo] = useState<FileInfo>({
+    data: '',
+    filePath: '',
+  });
+
+  const fileInfoRef = useRef(fileInfo);
+
+  useEffect(() => {
+    FileManager.new(Paths.READER, { info: fileInfoRef, update: setFileInfo });
+  }, []);
+
   return (
     <div className="md_container">
-      <h1>{filePath}</h1>
-      <MDEditor.Markdown source={data} />
+      <MDEditor.Markdown source={fileInfo.data} />
     </div>
   );
 }

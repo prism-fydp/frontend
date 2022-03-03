@@ -42,5 +42,4 @@ export const write = (filePath: string, data: string, flag = 'w') => {
 
   // Write to the file
   writeFileSync(absPath, data, { encoding: ENCODING, flag });
-  console.log('Write');
 };

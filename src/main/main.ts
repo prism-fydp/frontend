@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -41,9 +41,25 @@ ipcMain.on('open-file', async (event, arg) => {
   }
 });
 
-ipcMain.on('save-file', async (event, { data, filePath }) => {
-  console.log(`Received: ${event} ${filePath} ${data}`);
-  write(filePath, data);
+ipcMain.on('save-file', async (_, { data, filePath }) => {
+  let savePath: string = filePath;
+
+  // If the provided filePath to save to is invalid, then this is the first
+  // save for this document. Open a new save dialog to determine where the user
+  // wants to save to.
+  if (typeof filePath !== 'string' || filePath.length === 0) {
+    savePath = await dialog
+      .showSaveDialog({ properties: ['createDirectory'] })
+      .then((choice) => {
+        return choice.canceled || !choice.filePath ? '' : choice.filePath;
+      })
+      .catch(() => {
+        return '';
+      });
+  }
+
+  // Save the file
+  write(savePath, data);
 });
 
 if (process.env.NODE_ENV === 'production') {
