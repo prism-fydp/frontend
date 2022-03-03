@@ -42,12 +42,12 @@ ipcMain.on('open-file', async (event, arg) => {
 });
 
 ipcMain.on('save-file', async (_, { data, filePath }) => {
-  let savePath: string = filePath;
+  let savePath = typeof filePath === 'string' ? filePath : '';
 
   // If the provided filePath to save to is invalid, then this is the first
   // save for this document. Open a new save dialog to determine where the user
   // wants to save to.
-  if (typeof filePath !== 'string' || filePath.length === 0) {
+  if (!savePath.length) {
     savePath = await dialog
       .showSaveDialog({ properties: ['createDirectory'] })
       .then((choice) => {
@@ -56,10 +56,18 @@ ipcMain.on('save-file', async (_, { data, filePath }) => {
       .catch(() => {
         return '';
       });
+
+    // The path to save this file to was set by the above dialog. Inform the
+    // renderer of this file path.
+    if (savePath.length && mainWindow) {
+      mainWindow.webContents.send('set-file-path', savePath);
+    }
   }
 
   // Save the file
-  write(savePath, data);
+  if (savePath.length) {
+    write(savePath, data);
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {

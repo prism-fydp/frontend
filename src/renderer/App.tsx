@@ -6,16 +6,16 @@ import NavButton from './components/nav_button';
 import MarkdownEditor from './pages/editor';
 import Home from './pages/home';
 import MarkdownReader from './pages/reader';
-import FileInfo, { isValidFileInfo } from './file_management/file_info';
 import Paths, { currentPath, isCurrentPath } from './pages/paths';
+import FileInfo, { isValidFileInfo } from './file_management/file_info';
 import FileManager from './file_management/file_manager';
 
 /*
  * Create a listener for opening a file
  */
-window.electron.ipcRenderer.on('open-file', (data) => {
-  if (isValidFileInfo(data)) {
-    FileManager.set(currentPath(), data);
+window.electron.ipcRenderer.on('open-file', (fileInfo) => {
+  if (isValidFileInfo(fileInfo)) {
+    FileManager.set(currentPath(), fileInfo);
   }
 });
 
@@ -33,6 +33,19 @@ window.electron.ipcRenderer.on('save-file', (savePath) => {
     const toSave: FileInfo = { ...fileInfo.info.current, filePath };
     FileManager.set(Paths.EDITOR, toSave);
     window.electron.ipcRenderer.send('save-file', toSave);
+  }
+});
+
+/*
+ * Create a listener for updating the path of the current file
+ */
+window.electron.ipcRenderer.on('set-file-path', (savePath) => {
+  if (isCurrentPath(Paths.EDITOR) && typeof savePath === 'string') {
+    const fileInfo = FileManager.get(Paths.EDITOR);
+    if (!fileInfo) return;
+
+    const toSave: FileInfo = { ...fileInfo.info.current, filePath: savePath };
+    FileManager.set(Paths.EDITOR, toSave);
   }
 });
 
