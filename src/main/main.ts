@@ -34,14 +34,14 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('open-file', async (event, arg) => {
+ipcMain.on('file:open', async (event, arg) => {
   if (typeof arg === 'string') {
     const fileData = read(arg);
-    event.reply('open-file', fileData);
+    event.reply('file:open', fileData);
   }
 });
 
-ipcMain.on('save-file', async (_, { data, filePath }) => {
+ipcMain.on('file:save', async (_, { data, filePath }) => {
   let savePath = typeof filePath === 'string' ? filePath : '';
 
   // If the provided filePath to save to is invalid, then this is the first
@@ -60,7 +60,7 @@ ipcMain.on('save-file', async (_, { data, filePath }) => {
     // The path to save this file to was set by the above dialog. Inform the
     // renderer of this file path.
     if (savePath.length && mainWindow) {
-      mainWindow.webContents.send('set-file-path', savePath);
+      mainWindow.webContents.send('file:set-path', savePath);
     }
   }
 

@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
     send: (channel, data) => {
-      const validChannels = ['save-file'];
+      const validChannels = ['file:save'];
       if (validChannels.includes(channel)) {
         ipcRenderer.send(channel, data);
       }
@@ -14,9 +14,9 @@ contextBridge.exposeInMainWorld('electron', {
     on(channel, func) {
       const validChannels = [
         'ipc-example',
-        'open-file',
-        'save-file',
-        'set-file-path',
+        'file:open',
+        'file:save',
+        'file:set-path',
       ];
       if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`

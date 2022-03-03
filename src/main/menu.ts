@@ -213,7 +213,7 @@ export default class MenuBuilder {
                 })
                 .then((filePath) => {
                   const data = read(filePath);
-                  this.mainWindow.webContents.send('open-file', {
+                  this.mainWindow.webContents.send('file:open', {
                     data,
                     filePath,
                   });
@@ -226,7 +226,7 @@ export default class MenuBuilder {
             label: '&Save',
             accelerator: 'Ctrl+S',
             click: () => {
-              this.mainWindow.webContents.send('save-file');
+              this.mainWindow.webContents.send('file:save');
             },
           },
           {
@@ -243,7 +243,7 @@ export default class MenuBuilder {
                     : choice.filePath;
                 })
                 .then((filePath) => {
-                  this.mainWindow.webContents.send('save-file', filePath);
+                  this.mainWindow.webContents.send('file:save', filePath);
                   return true;
                 })
                 .catch((err) => {

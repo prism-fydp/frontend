@@ -13,7 +13,7 @@ import FileManager from './file_management/file_manager';
 /*
  * Create a listener for opening a file
  */
-window.electron.ipcRenderer.on('open-file', (fileInfo) => {
+window.electron.ipcRenderer.on('file:open', (fileInfo) => {
   if (isValidFileInfo(fileInfo)) {
     FileManager.set(currentPath(), fileInfo);
   }
@@ -22,7 +22,7 @@ window.electron.ipcRenderer.on('open-file', (fileInfo) => {
 /*
  * Create a listener for saving a file
  */
-window.electron.ipcRenderer.on('save-file', (savePath) => {
+window.electron.ipcRenderer.on('file:save', (savePath) => {
   if (isCurrentPath(Paths.EDITOR)) {
     const fileInfo = FileManager.get(Paths.EDITOR);
     if (!fileInfo) return;
@@ -32,14 +32,14 @@ window.electron.ipcRenderer.on('save-file', (savePath) => {
 
     const toSave: FileInfo = { ...fileInfo.info.current, filePath };
     FileManager.set(Paths.EDITOR, toSave);
-    window.electron.ipcRenderer.send('save-file', toSave);
+    window.electron.ipcRenderer.send('file:save', toSave);
   }
 });
 
 /*
  * Create a listener for updating the path of the current file
  */
-window.electron.ipcRenderer.on('set-file-path', (savePath) => {
+window.electron.ipcRenderer.on('file:set-path', (savePath) => {
   if (isCurrentPath(Paths.EDITOR) && typeof savePath === 'string') {
     const fileInfo = FileManager.get(Paths.EDITOR);
     if (!fileInfo) return;
