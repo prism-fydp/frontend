@@ -3,6 +3,7 @@ import MDEditor from '@uiw/react-md-editor';
 import FileInfo from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Paths from './paths';
+import NavOverlay from '../components/nav_overlay';
 
 /*
  * A markdown editor. Markdown text to render is provided in the props.
@@ -20,8 +21,13 @@ export default function MarkdownReader() {
   }, []);
 
   return (
-    <div className="md_container">
-      <MDEditor.Markdown source={fileInfo.data} />
-    </div>
+    <NavOverlay hideReaderButton hideEditorButton>
+      <MDEditor
+        value={fileInfo.data}
+        hideToolbar
+        preview="preview"
+        height={window.innerHeight * 0.95}
+      />
+    </NavOverlay>
   );
 }

@@ -1,0 +1,39 @@
+.dropdown-wrapper {
+  height: inherit;
+}
+
+.dropdown-header {
+  height: inherit
+}
+
+.dropdown-title {
+  height: inherit;
+}
+
+.dropdown-title-component {
+  height: inherit;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.dropdown-title-component img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.dropdown-list {
+  position: absolute;
+  width: fit-content;
+  max-width: 100vw;
+  right: 0;
+}
+
+.dropdown-item {
+  width: 100%;
+}
+
+.dropdown-item button {
+  width: inherit;
+}

@@ -1,5 +1,6 @@
 import MDEditor from '@uiw/react-md-editor';
 import { useEffect, useRef, useState } from 'react';
+import NavOverlay from '../components/nav_overlay';
 import FileInfo from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Paths from './paths';
@@ -30,8 +31,12 @@ export default function MarkdownEditor() {
   };
 
   return (
-    <div className="md_editor">
-      <MDEditor value={fileInfo.data} onChange={setData} />
-    </div>
+    <NavOverlay hideEditorButton>
+      <MDEditor
+        value={fileInfo.data}
+        onChange={setData}
+        height={window.innerHeight * 0.9}
+      />
+    </NavOverlay>
   );
 }
