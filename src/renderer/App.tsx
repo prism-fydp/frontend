@@ -1,50 +1,74 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import './App.css';
 
-const Hello = () => {
-  return (
-    <div>
-      <div className="Hello">
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
-  );
-};
+import { useState } from 'react';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+
+import NavButton from './components/nav_button';
+import MarkdownEditor from './pages/editor';
+import Home from './pages/home';
+import MarkdownReader from './pages/reader';
+import FileProps from './common/FileProps';
 
 export default function App() {
+  const [readerData, setReader] = useState<FileProps>({
+    data: '',
+    filePath: '',
+  });
+  const [editorData, setEditor] = useState<FileProps>({
+    data: '',
+    filePath: '',
+  });
+
+  window.electron.ipcRenderer.on('open-file', (data) => {
+    switch (window.location.hash) {
+      case '#/md-reader': {
+        setReader(data as FileProps);
+        break;
+      }
+      case '#/md-editor': {
+        setEditor(data as FileProps);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  });
+
+  let i = 0;
+  window.electron.ipcRenderer.on('save-file', (data) => {
+    if (window.location.hash === '#/md-editor') {
+      i += 1;
+      console.log(i, data);
+      // console.log(editorData.filePath, 'here');
+      const filePath =
+        typeof data === 'string' && data.length > 0
+          ? data
+          : editorData.filePath;
+      setEditor({ data: editorData.data, filePath });
+      // console.log(filePath, editorData.filePath);
+      window.electron.ipcRenderer.send('save-file', {
+        data: editorData.data,
+        filePath,
+      });
+    }
+  });
+
+  const reader = MarkdownReader(readerData);
+  const editor = MarkdownEditor(editorData, setEditor);
+
   return (
-    <Router>
+    <HashRouter>
+      <div className="nav-buttons">
+        <NavButton path="/md-reader" name="Read" />
+        <NavButton path="/md-editor" name="Write" />
+        <NavButton path="/" name="Home" />
+      </div>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/md-reader" element={reader} />
+        <Route path="/md-editor" element={editor} />
+        <Route path="/" element={Home()} />
       </Routes>
-    </Router>
+    </HashRouter>
   );
 }

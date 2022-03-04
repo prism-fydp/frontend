@@ -56,104 +56,191 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+      label: '&File',
       submenu: [
         {
-          label: 'About ElectronReact',
-          selector: 'orderFrontStandardAboutPanel:',
-        },
-        { type: 'separator' },
-        { label: 'Services', submenu: [] },
-        { type: 'separator' },
-        {
-          label: 'Hide ElectronReact',
-          accelerator: 'Command+H',
-          selector: 'hide:',
-        },
-        {
-          label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
-          selector: 'hideOtherApplications:',
-        },
-        { label: 'Show All', selector: 'unhideAllApplications:' },
-        { type: 'separator' },
-        {
-          label: 'Quit',
-          accelerator: 'Command+Q',
+          label: '&Open',
+          accelerator: 'Ctrl+O',
           click: () => {
-            app.quit();
+            dialog
+              .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
+              .then((choice) => {
+                return choice.canceled ? Promise.reject() : choice.filePaths[0];
+              })
+              .then((filePath) => {
+                const data = read(filePath);
+                this.mainWindow.webContents.send('open-file', {
+                  data,
+                  filePath,
+                });
+                return true;
+              })
+              .catch(console.error);
+          },
+        },
+        {
+          label: '&Save',
+          accelerator: 'Ctrl+S',
+          click: () => {
+            console.log('Save');
+            this.mainWindow.webContents.send('save-file', '');
+          },
+        },
+        {
+          label: '&Save As',
+          accelerator: 'Ctrl+Shift+S',
+          click: () => {
+            console.log('Save As');
+            dialog
+              .showSaveDialog(this.mainWindow, {
+                properties: ['createDirectory'],
+              })
+              .then((choice) => {
+                return choice.canceled ? Promise.reject() : choice.filePath;
+              })
+              .then((filePath) => {
+                this.mainWindow.webContents.send('save-file', filePath);
+                return true;
+              })
+              .catch(console.error);
+          },
+        },
+        {
+          label: '&Close',
+          accelerator: 'Ctrl+W',
+          click: () => {
+            this.mainWindow.close();
           },
         },
       ],
     };
-    const subMenuEdit: DarwinMenuItemConstructorOptions = {
-      label: 'Edit',
-      submenu: [
-        { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
-        { label: 'Redo', accelerator: 'Shift+Command+Z', selector: 'redo:' },
-        { type: 'separator' },
-        { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
-        { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
-        {
-          label: 'Select All',
-          accelerator: 'Command+A',
-          selector: 'selectAll:',
-        },
-      ],
+
+    const subMenuView: DarwinMenuItemConstructorOptions = {
+      label: '&View',
+      submenu:
+        process.env.NODE_ENV === 'development' ||
+        process.env.DEBUG_PROD === 'true'
+          ? [
+              {
+                label: '&Reload',
+                accelerator: 'Ctrl+R',
+                click: () => {
+                  this.mainWindow.webContents.reload();
+                },
+              },
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen()
+                  );
+                },
+              },
+              {
+                label: 'Toggle &Developer Tools',
+                accelerator: 'Alt+Ctrl+I',
+                click: () => {
+                  this.mainWindow.webContents.toggleDevTools();
+                },
+              },
+            ]
+          : [
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(
+                    !this.mainWindow.isFullScreen()
+                  );
+                },
+              },
+            ],
     };
-    const subMenuViewDev: MenuItemConstructorOptions = {
-      label: 'View',
+
+    const subMenuIPFS: DarwinMenuItemConstructorOptions = {
+      label: 'IPFS',
       submenu: [
         {
-          label: 'Reload',
-          accelerator: 'Command+R',
+          label: 'Ping',
           click: () => {
-            this.mainWindow.webContents.reload();
+            pingIPFS()
+              .then((res) => {
+                return dialog.showMessageBox(this.mainWindow, {
+                  message: `IPFS Ping Result: ${res ? 'Success' : 'Fail'}`,
+                  type: 'info',
+                  title: 'IPFS Ping',
+                });
+              })
+              .catch((err) => {
+                return dialog.showErrorBox(
+                  'IPFS Add Error',
+                  `Confirm that the IPFS daemon is running.\n${err}`
+                );
+              });
           },
         },
         {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
+          label: 'Add',
           click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
+            dialog
+              .showOpenDialog(this.mainWindow, {
+                properties: ['openFile'],
+              })
+              .then((choice) => {
+                return choice.canceled
+                  ? Promise.reject()
+                  : addIPFS(choice.filePaths[0]);
+              })
+              .then((res) => {
+                return dialog.showMessageBox(this.mainWindow, {
+                  message: `IPFS added file with CID ${res}`,
+                  type: 'info',
+                  title: 'IPFS Add',
+                });
+              })
+              .catch((err) => {
+                return dialog.showErrorBox(
+                  'IPFS Add Error',
+                  `Confirm that the IPFS daemon is running.\n${err}`
+                );
+              });
           },
         },
         {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
+          label: 'Get',
           click: () => {
-            this.mainWindow.webContents.toggleDevTools();
+            dialog
+              .showOpenDialog(this.mainWindow, {
+                properties: ['openDirectory'],
+              })
+              .then((choice) => {
+                return choice.canceled
+                  ? Promise.reject()
+                  : getIPFS(
+                      'QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj',
+                      choice.filePaths[0]
+                    );
+              })
+              .then((res) => {
+                return dialog.showMessageBox(this.mainWindow, {
+                  message: `Downloaded content from IFPS. Saved as: ${res}`,
+                  type: 'info',
+                  title: 'IPFS Get',
+                });
+              })
+              .catch((err) => {
+                return dialog.showErrorBox(
+                  'IPFS Get Error',
+                  `Confirm that the IPFS daemon is running.\n${err}`
+                );
+              });
           },
         },
       ],
     };
-    const subMenuViewProd: MenuItemConstructorOptions = {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          },
-        },
-      ],
-    };
-    const subMenuWindow: DarwinMenuItemConstructorOptions = {
-      label: 'Window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'Command+M',
-          selector: 'performMiniaturize:',
-        },
-        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
-        { type: 'separator' },
-        { label: 'Bring All to Front', selector: 'arrangeInFront:' },
-      ],
-    };
-    const subMenuHelp: MenuItemConstructorOptions = {
+
+    const subMenuHelp: DarwinMenuItemConstructorOptions = {
       label: 'Help',
       submenu: [
         {
@@ -185,13 +272,14 @@ export default class MenuBuilder {
       ],
     };
 
-    const subMenuView =
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-        ? subMenuViewDev
-        : subMenuViewProd;
-
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [
+      // subMenuElectron,
+      // subMenuElectron2,
+      subMenuAbout,
+      subMenuView,
+      subMenuIPFS,
+      subMenuHelp,
+    ];
   }
 
   buildDefaultTemplate() {
