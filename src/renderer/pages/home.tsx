@@ -1,4 +1,4 @@
-import NavOverlay from 'renderer/components/nav_overlay';
+import NavOverlay from '../components/nav_overlay';
 import icon from '../../../assets/icon.svg';
 
 export default function Home() {
