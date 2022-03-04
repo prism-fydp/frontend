@@ -1,5 +1,4 @@
 import {
-  app,
   Menu,
   shell,
   BrowserWindow,
@@ -8,11 +7,6 @@ import {
 } from 'electron';
 import { addIPFS, getIPFS, pingIPFS } from './ipfs/ipfs';
 import { read } from './utils/file_io';
-
-interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
-  selector?: string;
-  submenu?: DarwinMenuItemConstructorOptions[] | Menu;
-}
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
@@ -29,14 +23,9 @@ export default class MenuBuilder {
       this.setupDevelopmentEnvironment();
     }
 
-    const template =
-      process.platform === 'darwin'
-        ? this.buildDarwinTemplate()
-        : this.buildDefaultTemplate();
-
+    const template = this.buildTemplate();
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
-
     return menu;
   }
 
@@ -55,367 +44,205 @@ export default class MenuBuilder {
     });
   }
 
-  buildDarwinTemplate(): MenuItemConstructorOptions[] {
-    const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+  buildTemplate(): MenuItemConstructorOptions[] {
+    const isDarwin = process.platform === 'darwin';
+
+    const appSubMenu: MenuItemConstructorOptions[] = isDarwin
+      ? [
+          {
+            role: 'appMenu',
+            submenu: [
+              { role: 'about' },
+              { type: 'separator' },
+              { role: 'services', submenu: [] },
+              { type: 'separator' },
+              { role: 'hide' },
+              { role: 'unhide' },
+              { role: 'hideOthers' },
+              { type: 'separator' },
+              { role: 'quit' },
+            ],
+          },
+        ]
+      : [];
+
+    const fileSubMenu: MenuItemConstructorOptions = {
+      role: 'fileMenu',
       submenu: [
         {
-          label: 'About ElectronReact',
-          selector: 'orderFrontStandardAboutPanel:',
-        },
-        { type: 'separator' },
-        { label: 'Services', submenu: [] },
-        { type: 'separator' },
-        {
-          label: 'Hide ElectronReact',
-          accelerator: 'Command+H',
-          selector: 'hide:',
+          label: '&Open',
+          accelerator: isDarwin ? 'Command+O' : 'Ctrl+O',
+          click: () => this.openFile(),
         },
         {
-          label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
-          selector: 'hideOtherApplications:',
+          label: '&Save',
+          accelerator: isDarwin ? 'Command+S' : 'Ctrl+S',
+          click: () => this.mainWindow.webContents.send('file:save'),
         },
-        { label: 'Show All', selector: 'unhideAllApplications:' },
-        { type: 'separator' },
         {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          click: () => {
-            app.quit();
-          },
+          label: '&Save As',
+          accelerator: isDarwin ? 'Command+Shift+S' : 'Ctrl+Shift+S',
+          click: () => this.selectSavePath(),
         },
       ],
     };
-    const subMenuEdit: DarwinMenuItemConstructorOptions = {
-      label: 'Edit',
+
+    const editSubMenu: MenuItemConstructorOptions = {
+      role: 'editMenu',
       submenu: [
-        { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
-        { label: 'Redo', accelerator: 'Shift+Command+Z', selector: 'redo:' },
+        { role: 'undo' },
+        { role: 'redo' },
         { type: 'separator' },
-        { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
-        { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
-        { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
-        {
-          label: 'Select All',
-          accelerator: 'Command+A',
-          selector: 'selectAll:',
-        },
-      ],
-    };
-    const subMenuViewDev: MenuItemConstructorOptions = {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Reload',
-          accelerator: 'Command+R',
-          click: () => {
-            this.mainWindow.webContents.reload();
-          },
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          },
-        },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
-          click: () => {
-            this.mainWindow.webContents.toggleDevTools();
-          },
-        },
-      ],
-    };
-    const subMenuViewProd: MenuItemConstructorOptions = {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-          },
-        },
-      ],
-    };
-    const subMenuWindow: DarwinMenuItemConstructorOptions = {
-      label: 'Window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'Command+M',
-          selector: 'performMiniaturize:',
-        },
-        { label: 'Close', accelerator: 'Command+W', selector: 'performClose:' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { role: 'pasteAndMatchStyle' },
         { type: 'separator' },
-        { label: 'Bring All to Front', selector: 'arrangeInFront:' },
+        { role: 'selectAll' },
       ],
     };
-    const subMenuHelp: MenuItemConstructorOptions = {
-      label: 'Help',
+
+    const viewSubMenu: MenuItemConstructorOptions = {
+      role: 'viewMenu',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' },
+      ],
+    };
+
+    const windowSubMenu: MenuItemConstructorOptions = {
+      role: 'windowMenu',
+      submenu: [
+        { role: 'minimize' },
+        { type: 'separator' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { role: 'resetZoom' },
+        { type: 'separator' },
+        { role: 'close' },
+      ],
+    };
+
+    const ipfsSubMenu: MenuItemConstructorOptions = {
+      label: 'IPFS',
+      submenu: [
+        { label: 'Ping', click: () => this.pingIPFS() },
+        { label: 'Add', click: () => this.addIPFS() },
+        { label: 'Get', click: () => this.getIPFS() },
+      ],
+    };
+
+    const helpSubMenu: MenuItemConstructorOptions = {
+      role: isDarwin ? 'help' : undefined,
       submenu: [
         {
           label: 'Learn More',
-          click() {
-            shell.openExternal('https://electronjs.org');
-          },
-        },
-        {
-          label: 'Documentation',
-          click() {
-            shell.openExternal(
-              'https://github.com/electron/electron/tree/main/docs#readme'
-            );
-          },
-        },
-        {
-          label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://www.electronjs.org/community');
-          },
-        },
-        {
-          label: 'Search Issues',
-          click() {
-            shell.openExternal('https://github.com/electron/electron/issues');
-          },
+          click: () => shell.openExternal('https://github.com/prism-fydp'),
         },
       ],
     };
 
-    const subMenuView =
-      process.env.NODE_ENV === 'development' ||
-      process.env.DEBUG_PROD === 'true'
-        ? subMenuViewDev
-        : subMenuViewProd;
-
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+    return [
+      ...appSubMenu,
+      fileSubMenu,
+      editSubMenu,
+      viewSubMenu,
+      windowSubMenu,
+      ipfsSubMenu,
+      helpSubMenu,
+    ];
   }
 
-  buildDefaultTemplate() {
-    const templateDefault = [
-      {
-        label: '&File',
-        submenu: [
-          {
-            label: '&Open',
-            accelerator: 'Ctrl+O',
-            click: () => {
-              dialog
-                .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
-                .then((choice) => {
-                  return choice.canceled
-                    ? Promise.reject()
-                    : choice.filePaths[0];
-                })
-                .then((filePath) => {
-                  const data = read(filePath);
-                  this.mainWindow.webContents.send('file:open', {
-                    data,
-                    filePath,
-                  });
-                  return true;
-                })
-                .catch(() => {});
-            },
-          },
-          {
-            label: '&Save',
-            accelerator: 'Ctrl+S',
-            click: () => {
-              this.mainWindow.webContents.send('file:save');
-            },
-          },
-          {
-            label: '&Save As',
-            accelerator: 'Ctrl+Shift+S',
-            click: () => {
-              dialog
-                .showSaveDialog(this.mainWindow, {
-                  properties: ['createDirectory'],
-                })
-                .then((choice) => {
-                  return choice.canceled || !choice.filePath
-                    ? Promise.reject()
-                    : choice.filePath;
-                })
-                .then((filePath) => {
-                  this.mainWindow.webContents.send('file:save', filePath);
-                  return true;
-                })
-                .catch((err) => {
-                  dialog.showErrorBox('Save As Error', `${err}`);
-                });
-            },
-          },
-          {
-            label: '&Close',
-            accelerator: 'Ctrl+W',
-            click: () => {
-              this.mainWindow.close();
-            },
-          },
-        ],
-      },
-      {
-        label: '&View',
-        submenu:
-          process.env.NODE_ENV === 'development' ||
-          process.env.DEBUG_PROD === 'true'
-            ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  },
-                },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  },
-                },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.webContents.toggleDevTools();
-                  },
-                },
-              ]
-            : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  },
-                },
-              ],
-      },
-      {
-        label: 'IPFS',
-        submenu: [
-          {
-            label: 'Ping',
-            click: () => {
-              pingIPFS()
-                .then((res) => {
-                  return dialog.showMessageBox(this.mainWindow, {
-                    message: `IPFS Ping Result: ${res ? 'Success' : 'Fail'}`,
-                    type: 'info',
-                    title: 'IPFS Ping',
-                  });
-                })
-                .catch((err) => {
-                  return dialog.showErrorBox(
-                    'IPFS Add Error',
-                    `Confirm that the IPFS daemon is running.\n${err}`
-                  );
-                });
-            },
-          },
-          {
-            label: 'Add',
-            click: () => {
-              dialog
-                .showOpenDialog(this.mainWindow, {
-                  properties: ['openFile'],
-                })
-                .then((choice) => {
-                  return choice.canceled
-                    ? Promise.reject()
-                    : addIPFS(choice.filePaths[0]);
-                })
-                .then((res) => {
-                  return dialog.showMessageBox(this.mainWindow, {
-                    message: `IPFS added file with CID ${res}`,
-                    type: 'info',
-                    title: 'IPFS Add',
-                  });
-                })
-                .catch((err) => {
-                  return dialog.showErrorBox(
-                    'IPFS Add Error',
-                    `Confirm that the IPFS daemon is running.\n${err}`
-                  );
-                });
-            },
-          },
-          {
-            label: 'Get',
-            click: () => {
-              dialog
-                .showOpenDialog(this.mainWindow, {
-                  properties: ['openDirectory'],
-                })
-                .then((choice) => {
-                  return choice.canceled
-                    ? Promise.reject()
-                    : getIPFS(
-                        'QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj',
-                        choice.filePaths[0]
-                      );
-                })
-                .then((res) => {
-                  return dialog.showMessageBox(this.mainWindow, {
-                    message: `Downloaded content from IFPS. Saved as: ${res}`,
-                    type: 'info',
-                    title: 'IPFS Get',
-                  });
-                })
-                .catch((err) => {
-                  return dialog.showErrorBox(
-                    'IPFS Get Error',
-                    `Confirm that the IPFS daemon is running.\n${err}`
-                  );
-                });
-            },
-          },
-        ],
-      },
-      {
-        label: 'Help',
-        submenu: [
-          {
-            label: 'Learn More',
-            click() {
-              shell.openExternal('https://electronjs.org');
-            },
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme'
-              );
-            },
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            },
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
-            },
-          },
-        ],
-      },
-    ];
+  private openFile(): void {
+    dialog
+      .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
+      .then((choice) =>
+        choice.canceled ? Promise.reject() : choice.filePaths[0]
+      )
+      .then((filePath) => {
+        const fileInfo = { data: read(filePath), filePath };
+        return this.mainWindow.webContents.send('file:open', fileInfo);
+      })
+      .catch(() => {});
+  }
 
-    return templateDefault;
+  private selectSavePath(): void {
+    dialog
+      .showSaveDialog(this.mainWindow, { properties: ['createDirectory'] })
+      .then((choice) =>
+        choice.canceled || !choice.filePath ? Promise.reject() : choice.filePath
+      )
+      .then((filePath) =>
+        this.mainWindow.webContents.send('file:save', filePath)
+      )
+      .catch(() => {});
+  }
+
+  private pingIPFS(): void {
+    pingIPFS()
+      .then((res) =>
+        dialog.showMessageBox(this.mainWindow, {
+          message: `IPFS Ping Result: ${res ? 'Success' : 'Fail'}`,
+          type: 'info',
+          title: 'IPFS Ping',
+        })
+      )
+      .catch((err) =>
+        dialog.showErrorBox(
+          'IPFS Ping Error',
+          `Confirm that the IPFS daemon is running.\n${err}`
+        )
+      );
+  }
+
+  private addIPFS(): void {
+    dialog
+      .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
+      .then((choice) =>
+        choice.canceled ? Promise.reject() : addIPFS(choice.filePaths[0])
+      )
+      .then((res) =>
+        dialog.showMessageBox(this.mainWindow, {
+          message: `IPFS added file with CID ${res}`,
+          type: 'info',
+          title: 'IPFS Add',
+        })
+      )
+      .catch((err) =>
+        dialog.showErrorBox(
+          'IPFS Add Error',
+          `Confirm that the IPFS daemon is running.\n${err}`
+        )
+      );
+  }
+
+  private getIPFS(): void {
+    dialog
+      .showOpenDialog(this.mainWindow, {
+        properties: ['openDirectory', 'createDirectory'],
+      })
+      .then((choice) =>
+        choice.canceled || !choice.filePaths[0].length
+          ? Promise.reject()
+          : getIPFS(
+              'QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj',
+              choice.filePaths[0]
+            )
+      )
+      .then((res) =>
+        dialog.showMessageBox(this.mainWindow, {
+          message: `Downloaded content from IPFS. Saved as: ${res}`,
+          type: 'info',
+          title: 'IPFS Get',
+        })
+      )
+      .catch((err) =>
+        dialog.showErrorBox(
+          'IPFS Get Error',
+          `Confirm that the IPFS daemon is running.\n${err}`
+        )
+      );
   }
 }
