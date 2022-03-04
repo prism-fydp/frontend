@@ -1,50 +1,55 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import './App.css';
 
-const Hello = () => {
-  return (
-    <div>
-      <div className="Hello">
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
-  );
-};
+import { HashRouter } from 'react-router-dom';
+
+import Paths, { currentPath, isCurrentPath } from './pages/paths';
+import FileInfo, { isValidFileInfo } from './file_management/file_info';
+import FileManager from './file_management/file_manager';
+import AppRoutes from './pages/routes';
+
+/*
+ * Create a listener for opening a file
+ */
+window.electron.ipcRenderer.on('file:open', (fileInfo) => {
+  if (isValidFileInfo(fileInfo)) {
+    FileManager.set(currentPath(), fileInfo);
+  }
+});
+
+/*
+ * Create a listener for saving a file
+ */
+window.electron.ipcRenderer.on('file:save', (savePath) => {
+  if (isCurrentPath(Paths.EDITOR)) {
+    const fileInfo = FileManager.get(Paths.EDITOR);
+    if (!fileInfo) return;
+
+    const useSavePath = typeof savePath === 'string' && savePath.length;
+    const filePath = useSavePath ? savePath : fileInfo.info.current.filePath;
+
+    const toSave: FileInfo = { ...fileInfo.info.current, filePath };
+    FileManager.set(Paths.EDITOR, toSave);
+    window.electron.ipcRenderer.send('file:save', toSave);
+  }
+});
+
+/*
+ * Create a listener for updating the path of the current file
+ */
+window.electron.ipcRenderer.on('file:set-path', (savePath) => {
+  if (isCurrentPath(Paths.EDITOR) && typeof savePath === 'string') {
+    const fileInfo = FileManager.get(Paths.EDITOR);
+    if (!fileInfo) return;
+
+    const toSave: FileInfo = { ...fileInfo.info.current, filePath: savePath };
+    FileManager.set(Paths.EDITOR, toSave);
+  }
+});
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
+    <HashRouter>
+      <AppRoutes />
+    </HashRouter>
   );
 }

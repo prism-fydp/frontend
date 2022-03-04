@@ -138,7 +138,9 @@
     },
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/.erb/mocks/fileMock.js",
-      "\\.(css|less|sass|scss)$": "identity-obj-proxy"
+      "\\.(css|less|sass|scss)$": "identity-obj-proxy",
+      "^@uiw/react-markdown-preview": "@uiw/react-markdown-preview/dist/markdown.js",
+      "^@uiw/react-md-editor": "@uiw/react-md-editor/dist/mdeditor.js"
     },
     "moduleFileExtensions": [
       "js",
@@ -156,6 +158,9 @@
     ],
     "setupFiles": [
       "./.erb/scripts/check-build-exists.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__mocks__/window_mock.ts"
     ]
   },
   "devDependencies": {
@@ -226,6 +231,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@uiw/react-md-editor": "^3.9.9",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.4",
     "electron-updater": "^4.6.5",

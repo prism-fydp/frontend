@@ -11,11 +11,12 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { resolveHtmlPath } from './utils/resolve_html_path';
+import { read, write } from './utils/file_io';
 
 export default class AppUpdater {
   constructor() {
@@ -31,6 +32,42 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('file:open', async (event, arg) => {
+  if (typeof arg === 'string') {
+    const fileData = read(arg);
+    event.reply('file:open', fileData);
+  }
+});
+
+ipcMain.on('file:save', async (_, { data, filePath }) => {
+  let savePath = typeof filePath === 'string' ? filePath : '';
+
+  // If the provided filePath to save to is invalid, then this is the first
+  // save for this document. Open a new save dialog to determine where the user
+  // wants to save to.
+  if (!savePath.length) {
+    savePath = await dialog
+      .showSaveDialog({ properties: ['createDirectory'] })
+      .then((choice) => {
+        return choice.canceled || !choice.filePath ? '' : choice.filePath;
+      })
+      .catch(() => {
+        return '';
+      });
+
+    // The path to save this file to was set by the above dialog. Inform the
+    // renderer of this file path.
+    if (savePath.length && mainWindow) {
+      mainWindow.webContents.send('file:set-path', savePath);
+    }
+  }
+
+  // Save the file
+  if (savePath.length) {
+    write(savePath, data);
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {

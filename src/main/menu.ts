@@ -7,6 +7,7 @@ import {
   dialog,
 } from 'electron';
 import { addIPFS, getIPFS, pingIPFS } from './ipfs/ipfs';
+import { read } from './utils/file_io';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -202,6 +203,53 @@ export default class MenuBuilder {
           {
             label: '&Open',
             accelerator: 'Ctrl+O',
+            click: () => {
+              dialog
+                .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
+                .then((choice) => {
+                  return choice.canceled
+                    ? Promise.reject()
+                    : choice.filePaths[0];
+                })
+                .then((filePath) => {
+                  const data = read(filePath);
+                  this.mainWindow.webContents.send('file:open', {
+                    data,
+                    filePath,
+                  });
+                  return true;
+                })
+                .catch(() => {});
+            },
+          },
+          {
+            label: '&Save',
+            accelerator: 'Ctrl+S',
+            click: () => {
+              this.mainWindow.webContents.send('file:save');
+            },
+          },
+          {
+            label: '&Save As',
+            accelerator: 'Ctrl+Shift+S',
+            click: () => {
+              dialog
+                .showSaveDialog(this.mainWindow, {
+                  properties: ['createDirectory'],
+                })
+                .then((choice) => {
+                  return choice.canceled || !choice.filePath
+                    ? Promise.reject()
+                    : choice.filePath;
+                })
+                .then((filePath) => {
+                  this.mainWindow.webContents.send('file:save', filePath);
+                  return true;
+                })
+                .catch((err) => {
+                  dialog.showErrorBox('Save As Error', `${err}`);
+                });
+            },
           },
           {
             label: '&Close',
