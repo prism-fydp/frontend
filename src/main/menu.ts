@@ -136,6 +136,7 @@ export default class MenuBuilder {
 
     const helpSubMenu: MenuItemConstructorOptions = {
       role: isDarwin ? 'help' : undefined,
+      label: 'Help',
       submenu: [
         {
           label: 'Learn More',
