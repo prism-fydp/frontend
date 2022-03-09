@@ -5,7 +5,7 @@ import {
   MenuItemConstructorOptions,
   dialog,
 } from 'electron';
-import { addIPFS, getIPFS, pingIPFS } from './ipfs/ipfs';
+import { addIPFS, getIPFS, pingIPFS, setIPFS } from './ipfs/ipfs';
 import { read } from './utils/file_io';
 
 export default class MenuBuilder {
@@ -131,6 +131,10 @@ export default class MenuBuilder {
         { label: 'Ping', click: () => this.pingIPFS() },
         { label: 'Add', click: () => this.addIPFS() },
         { label: 'Get', click: () => this.getIPFS() },
+        {
+          label: 'Set',
+          click: () => setIPFS('IPFS:DataStore:StorageMax', '10GB'),
+        },
       ],
     };
 
