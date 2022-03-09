@@ -1,6 +1,7 @@
 .nav {
   display: flex;
   flex-direction: column;
+  overflow: scroll;
   width: 99vw;
   height: 100vh;
 }

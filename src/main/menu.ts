@@ -4,6 +4,7 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
   dialog,
+  app,
 } from 'electron';
 import { addIPFS, getIPFS, pingIPFS } from './ipfs/ipfs';
 import { read } from './utils/file_io';
@@ -51,6 +52,7 @@ export default class MenuBuilder {
       ? [
           {
             role: 'appMenu',
+            label: app.name,
             submenu: [
               { role: 'about' },
               { type: 'separator' },
@@ -139,7 +141,12 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'Learn More',
-          click: () => shell.openExternal('https://github.com/prism-fydp'),
+          // click: () => shell.openExternal('https://github.com/prism-fydp'),
+          click: () =>
+            shell
+              .openPath('/Users/adisharma/Desktop/prism-fe/src/main/hi.html')
+              .then(console.log)
+              .catch(console.log),
         },
       ],
     };

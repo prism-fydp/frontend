@@ -1,0 +1,16 @@
+:root {
+  --color-primary: #1b1a1d;
+  --font-display: "Raleway", sans-serif;
+}
+
+body {
+  font-family: var(--font-display);
+  height: 99vh;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.shadow-solid-primary {
+  box-shadow: 10px 10px var(--color-primary);
+}

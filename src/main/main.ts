@@ -161,6 +161,9 @@ app.on('window-all-closed', () => {
   }
 });
 
+app.setName('PRSIM');
+
+
 app
   .whenReady()
   .then(() => {
