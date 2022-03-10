@@ -10,8 +10,6 @@ declare global {
   interface Window {
     electron: {
       ipcRenderer: {
-        myPing: () => void;
-
         // Following functions use arguments of type `unknown` instead of `any`
         // because typescript gets mad when using an explicit `any` type here.
         // This still functions the same, requiring that provided funcs check

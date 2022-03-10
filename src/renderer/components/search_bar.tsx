@@ -52,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 async function queryDB(text: string) {
   const query = `
     query Search {
-      content(where:
+      essay(where:
         {_or: [
           {title: {_ilike: "%${text}%"}},
           {user:  {username: {_ilike: "%${text}%"}}}
@@ -91,7 +91,7 @@ function SearchBar({ setFileSummaries }: Props) {
       queryDB(text)
         .then((result) => result.json())
         .then(({ data, errors }) =>
-          errors ? Promise.reject(errors) : data.content
+          errors ? Promise.reject(errors) : data.essay
         )
         .then(setFileSummaries)
         .catch(console.log);
