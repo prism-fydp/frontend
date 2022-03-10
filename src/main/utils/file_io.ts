@@ -22,6 +22,16 @@ export const read = (filePath: string) => {
 };
 
 /*
+ * Creates a directory if it does not already exist
+ */
+export const createDir = (path: string) => {
+  const absPath = resolve(path);
+  if (!existsSync(absPath)) {
+    mkdirSync(absPath, { recursive: true });
+  }
+};
+
+/*
  * Write data to the file at the given path. Defaults to 'w' mode, but can be
  * set to 'a' for append
  */
@@ -36,9 +46,7 @@ export const write = (filePath: string, data: string, flag = 'w') => {
 
   // Create the directory if it does not exist
   const dir = dirname(absPath);
-  if (!existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
-  }
+  createDir(dir);
 
   // Write to the file
   writeFileSync(absPath, data, { encoding: ENCODING, flag });

@@ -27,4 +27,3 @@ export default abstract class UserManager {
     this.id = parseInt(id, 10);
   }
 }
-

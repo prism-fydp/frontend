@@ -73,6 +73,7 @@ export function pingIPFS(port = DEFAULT_PORT, host = DEFAULT_HOST) {
       } else {
         reject(new Error(`Received response '${response.Msg}' and not 'Pong'`));
       }
+      client.end();
     });
   });
 }
