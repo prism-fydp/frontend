@@ -17,6 +17,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './utils/resolve_html_path';
 import { read, write } from './utils/file_io';
+import openPaymentPage from './pages/payment';
 
 export default class AppUpdater {
   constructor() {
@@ -68,6 +69,10 @@ ipcMain.on('file:save', async (_, { data, filePath }) => {
   if (savePath.length) {
     write(savePath, data);
   }
+});
+
+ipcMain.on('pay', (_, addr) => {
+  openPaymentPage(addr);
 });
 
 if (process.env.NODE_ENV === 'production') {
