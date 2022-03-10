@@ -3,8 +3,8 @@ import NavOverlay from '../components/nav_overlay';
 import logo from '../../../assets/logo.svg';
 // import Signup from './signup';
 import Trybutton from '../components/try';
-import SearchBar from '../components/search';
 import Paths from './paths';
+import Search from './search';
 
 export default function Dashboard() {
   return (
@@ -13,7 +13,7 @@ export default function Dashboard() {
         <div className="Hello">
           <img width="200px" alt="logo" src={logo} />
         </div>
-        <SearchBar />
+        <Search />
         <Typography color="#000000" variant="h1" component="div" gutterBottom>
           Own your content, Own Yourself
         </Typography>
