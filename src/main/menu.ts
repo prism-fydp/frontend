@@ -141,12 +141,7 @@ export default class MenuBuilder {
       submenu: [
         {
           label: 'Learn More',
-          // click: () => shell.openExternal('https://github.com/prism-fydp'),
-          click: () =>
-            shell
-              .openPath('/Users/adisharma/Desktop/prism-fe/src/main/hi.html')
-              .then(console.log)
-              .catch(console.log),
+          click: () => shell.openExternal('https://github.com/prism-fydp'),
         },
       ],
     };
