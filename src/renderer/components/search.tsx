@@ -1,6 +1,7 @@
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { useState } from 'react';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -43,15 +44,72 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+async function queryDB(text: string) {
+  const query = `
+    query Search {
+      content(where:
+        {_or: [
+          {title: {_ilike: "%${text}%"}},
+          {user:  {username: {_ilike: "%${text}%"}}}
+        ]}
+      ) {
+        cid
+        title
+        created_at
+        user {
+          username
+        }
+      }
+    }
+  `;
+  console.log(query);
+
+  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
+    method: 'POST',
+    credentials: 'include',
+    headers: new Headers({
+      'content-type': 'application/json',
+      'x-hasura-admin-secret':
+        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
+    }),
+    body: JSON.stringify({
+      query,
+      variables: {},
+      operationName: 'Search',
+    }),
+  });
+}
+
 function SearchBar() {
+  const [text, setText] = useState('');
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      queryDB(text)
+        .then((result) => result.json())
+        .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
+        .then(console.log)
+        .catch(console.log);
+    }
+  };
+
+  const handleTextChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    setText(event.target.value);
+  };
+
   return (
     <Search>
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
+        value={text}
         placeholder="Search…"
         inputProps={{ 'aria-label': 'search' }}
+        onKeyPress={handleKeyPress}
+        onChange={handleTextChange}
       />
     </Search>
   );
