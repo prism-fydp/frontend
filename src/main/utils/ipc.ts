@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { read, write } from './file_io';
 import { READ_DIR } from './paths';
-import { getIPFS } from '../ipfs/ipfs';
+import { getIPFS, setIPFS } from '../ipfs/ipfs';
 import openPaymentPage from '../pages/payment';
 
 function setupFileIPC(window: BrowserWindow) {
@@ -59,6 +59,10 @@ function setupIpfsIPC() {
       .catch(() =>
         event.reply('file:open', { filePath: '', data: 'Failed to download' })
       );
+  });
+
+  ipcMain.on('ipfs:setting-update', (_, params) => {
+    setIPFS(params.settingKey, params.updatedValue);
   });
 }
 

@@ -3,7 +3,7 @@ import './nav_overlay.css';
 import React from 'react';
 import Paths from 'renderer/pages/paths';
 import NavButton from './nav_button';
-import ProfileDropdown from './profile_button';
+import ProfileDropdown from './profile_dropdown';
 
 interface Props {
   hideHomeButton?: boolean;

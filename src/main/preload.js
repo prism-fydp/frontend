@@ -3,7 +3,12 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
     send: (channel, data) => {
-      const validChannels = ['file:save', 'ipfs:get', 'pay'];
+      const validChannels = [
+        'file:save',
+        'ipfs:get',
+        'ipfs:setting-update',
+        'pay',
+      ];
       if (validChannels.includes(channel)) {
         ipcRenderer.send(channel, data);
       }
