@@ -1,10 +1,17 @@
 import './try.css';
+import { useNavigate } from 'react-router-dom';
 
 interface TrybuttonProps {
   buttonText: string;
+  routepath: string;
 }
 
-function Trybutton({ buttonText }: React.PropsWithChildren<TrybuttonProps>) {
+function Trybutton({
+  buttonText,
+  routepath,
+}: React.PropsWithChildren<TrybuttonProps>) {
+  const nav = useNavigate();
+
   return (
     <button
       className="text-3xl shadow-solid-primary
@@ -17,6 +24,7 @@ function Trybutton({ buttonText }: React.PropsWithChildren<TrybuttonProps>) {
                   hover:text-black hover:border-black
                   "
       type="button"
+      onClick={() => nav(routepath)}
     >
       {buttonText}
     </button>

@@ -1,12 +1,12 @@
 import Typography from '@mui/material/Typography';
 import NavOverlay from '../components/nav_overlay';
 import logo from '../../../assets/logo.svg';
-import Login from '../components/login';
-import Signup from '../components/signup';
+// import Signup from './signup';
 import Trybutton from '../components/try';
 import SearchBar from '../components/search';
+import Paths from './paths';
 
-export default function Home() {
+export default function Dashboard() {
   return (
     <NavOverlay hideHomeButton>
       <div>
@@ -20,14 +20,13 @@ export default function Home() {
         <Typography color="#000000" variant="h3" gutterBottom component="div">
           The essential Web3 platform for writing and reading anything
         </Typography>
-        <Trybutton buttonText="Try PRISM" />
-        <Signup />
-        <Login />
+        <Trybutton routepath={Paths.SIGNUP} buttonText="Try PRISM" />
+        <Trybutton routepath={Paths.LOGIN} buttonText="Log In" />
+        {/* <Signup /> */}
       </div>
     </NavOverlay>
   );
 }
-
 // .search {
 // 	padding: 0 30px;
 // 	font-size: 18px;

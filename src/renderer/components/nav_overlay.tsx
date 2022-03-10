@@ -20,7 +20,7 @@ function NavOverlay({
   return (
     <div className="nav">
       <div className="nav-bar">
-        {!hideHomeButton && <NavButton path={Paths.HOME} name="Home" />}
+        {!hideHomeButton && <NavButton path={Paths.LANDING} name="Home" />}
         {!hideReaderButton && <NavButton path={Paths.READER} name="Reader" />}
         <div className="profile-dropdown">
           <ProfileDropdown />
