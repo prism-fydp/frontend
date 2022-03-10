@@ -1,14 +1,15 @@
 import Typography from '@mui/material/Typography';
 import NavOverlay from '../components/nav_overlay';
 import logo from '../../../assets/logo.svg';
+import Login from './login';
 // import Signup from './signup';
 import Trybutton from '../components/try';
 import SearchBar from '../components/search';
 import Paths from './paths';
 
-export default function Home() {
+export default function Landing() {
   return (
-    <NavOverlay hideHomeButton>
+    <>
       <div>
         <div className="Hello">
           <img width="200px" alt="logo" src={logo} />
@@ -23,8 +24,9 @@ export default function Home() {
         <Trybutton routepath={Paths.SIGNUP} buttonText="Try PRISM" />
         <Trybutton routepath={Paths.LOGIN} buttonText="Log In" />
         {/* <Signup /> */}
+        {/* <Login /> */}
       </div>
-    </NavOverlay>
+    </>
   );
 }
 // .search {

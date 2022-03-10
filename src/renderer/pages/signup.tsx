@@ -6,6 +6,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
+import UserManager from 'renderer/user_manager/user_manager';
+import { useNavigate } from 'react-router-dom';
 import Trybutton from '../components/try';
 import Paths from './paths';
 
@@ -91,18 +93,6 @@ const reducer = (state: State, action: Action): State => {
         ...state,
         isButtonDisabled: action.payload,
       };
-    case 'loginSuccess':
-      return {
-        ...state,
-        helperText: action.payload,
-        isError: false,
-      };
-    case 'loginFailed':
-      return {
-        ...state,
-        helperText: action.payload,
-        isError: true,
-      };
     case 'setIsError':
       return {
         ...state,
@@ -116,7 +106,7 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-async function queryDB(bio: string, username: string, password: string) {
+async function queryDB(username: string, password: string, bio: string) {
   const query = `
   mutation NewUser {
     insert_user_one(object: {bio: "${bio}", password: "${username}", username: "${password}"}) {
@@ -143,6 +133,7 @@ async function queryDB(bio: string, username: string, password: string) {
   });
 }
 const Signup = () => {
+  const nav = useNavigate();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -169,19 +160,17 @@ const Signup = () => {
   }, [state.username, state.password, state.confirmpassword]);
 
   const handleSignup = () => {
-    queryDB(state.bio, state.username, state.password)
+    queryDB(state.username, state.password, state.bio)
       .then((result) => result.json())
       .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
-      // .then(function (data) {
-      //   return React.createContext({
-      //     username: state.username,
-      //     bio: state.bio,
-      //     id: data.content.id,
-      //   });
-      // })
+      .then(function (data): any {
+        UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
+        return data;
+      })
       .then(console.log)
       .catch(console.log);
     // export default res;
+    nav(Paths.DASHBOARD);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -225,7 +214,7 @@ const Signup = () => {
   };
   return (
     <>
-      <Trybutton routepath={Paths.HOME} buttonText="Back" />
+      <Trybutton routepath={Paths.LANDING} buttonText="Back" />
       <form className={classes.container} noValidate autoComplete="off">
         <Card className={classes.card}>
           <CardHeader className={classes.header} title="Sign up" />

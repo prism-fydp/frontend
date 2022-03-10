@@ -9,6 +9,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 import Trybutton from '../components/try';
 import Paths from './paths';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -102,6 +103,7 @@ const reducer = (state: State, action: Action): State => {
 };
 
 const Login = () => {
+  const nav = useNavigate();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -120,17 +122,17 @@ const Login = () => {
   }, [state.username, state.password]);
 
   const handleLogin = () => {
-    if (state.username === 'abc@email.com' && state.password === 'password') {
-      dispatch({
-        type: 'loginSuccess',
-        payload: 'Login Successfully',
-      });
-    } else {
-      dispatch({
-        type: 'loginFailed',
-        payload: 'Incorrect username or password',
-      });
-    }
+    // queryDB(state.username, state.password, state.bio)
+    //   .then((result) => result.json())
+    //   .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
+    //   .then(function (data): any {
+    //     UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
+    //     return data;
+    //   })
+    //   .then(console.log)
+    //   .catch(console.log);
+    // // export default res;
+    nav(Paths.DASHBOARD);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -158,10 +160,10 @@ const Login = () => {
   };
   return (
     <>
-      <Trybutton routepath={Paths.HOME} buttonText="Back" />
+      <Trybutton routepath={Paths.LANDING} buttonText="Back" />
       <form className={classes.container} noValidate autoComplete="off">
         <Card className={classes.card}>
-          <CardHeader className={classes.header} title="Sign up" />
+          <CardHeader className={classes.header} title="Log In" />
           <CardContent>
             <div>
               <TextField

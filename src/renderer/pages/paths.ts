@@ -5,10 +5,10 @@
 const enum Paths {
   READER = '/md-reader',
   EDITOR = '/md-editor',
-  HOME = '/',
+  LANDING = '/',
   SIGNUP = '/signup',
-  LANDING = '/landing',
-  LOGIN = "/login",
+  DASHBOARD = '/dashboard',
+  LOGIN = '/login',
 }
 
 export const currentPath = () => {
