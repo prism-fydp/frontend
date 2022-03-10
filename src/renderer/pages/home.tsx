@@ -1,41 +1,42 @@
+import Typography from '@mui/material/Typography';
 import NavOverlay from '../components/nav_overlay';
-import icon from '../../../assets/icon.svg';
+import logo from '../../../assets/logo.svg';
+import Login from '../components/login';
+import Signup from '../components/signup';
+import Trybutton from '../components/try';
+import SearchBar from '../components/search';
 
 export default function Home() {
   return (
     <NavOverlay hideHomeButton>
       <div>
         <div className="Hello">
-          <img width="200px" alt="icon" src={icon} />
+          <img width="200px" alt="logo" src={logo} />
         </div>
-        <h1>electron-react-boilerplate</h1>
-        <div className="Hello">
-          <a
-            href="https://electron-react-boilerplate.js.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <button type="button">
-              <span role="img" aria-label="books">
-                📚
-              </span>
-              Read our docs
-            </button>
-          </a>
-          <a
-            href="https://github.com/sponsors/electron-react-boilerplate"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <button type="button">
-              <span role="img" aria-label="books">
-                🙏
-              </span>
-              Donate
-            </button>
-          </a>
-        </div>
+        <SearchBar />
+        <Typography color="#000000" variant="h1" component="div" gutterBottom>
+          Own your content, Own Yourself
+        </Typography>
+        <Typography color="#000000" variant="h3" gutterBottom component="div">
+          The essential Web3 platform for writing and reading anything
+        </Typography>
+        <Trybutton buttonText="Try PRISM" />
+        <Signup />
+        <Login />
       </div>
     </NavOverlay>
   );
 }
+
+// .search {
+// 	padding: 0 30px;
+// 	font-size: 18px;
+// 	width: 60%;
+// 	max-width: 400px;
+// 	height: 80px;
+// 	border: 1px solid darken(white, 30%);
+// 	border-radius: 20px 0 0 20px;
+// }
+
+// className={styles.button}
+// onClick={() => connect(setUserAddress)}

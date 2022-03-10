@@ -1,4 +1,10 @@
 import { render } from 'react-dom';
+import { MetaMaskProvider } from 'metamask-react';
 import App from './App';
 
-render(<App />, document.getElementById('root'));
+render(
+  <MetaMaskProvider>
+    <App />
+  </MetaMaskProvider>,
+  document.getElementById('root')
+);
