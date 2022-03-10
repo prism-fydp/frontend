@@ -8,7 +8,6 @@
 //     </div>
 //     </}
 
-
 //     export default function NavButton({ path, name }: NavButtonProps) {
 //       const nav = useNavigate();
 //       return (
