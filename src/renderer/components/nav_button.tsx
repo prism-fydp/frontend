@@ -13,3 +13,5 @@ export default function NavButton({ path, name }: NavButtonProps) {
     </button>
   );
 }
+
+// {!hideReaderButton && <NavButton path={Paths.READER} name="Reader" />}
