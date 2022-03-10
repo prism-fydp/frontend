@@ -4,7 +4,7 @@ import logo from '../../../assets/logo.svg';
 import Login from './login';
 // import Signup from './signup';
 import Trybutton from '../components/try';
-import SearchBar from '../components/search';
+import Search from './search';
 import Paths from './paths';
 
 export default function Landing() {
@@ -14,7 +14,7 @@ export default function Landing() {
         <div className="Hello">
           <img width="200px" alt="logo" src={logo} />
         </div>
-        <SearchBar />
+        <Search />
         <Typography color="#000000" variant="h1" component="div" gutterBottom>
           Own your content, Own Yourself
         </Typography>
