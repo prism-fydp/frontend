@@ -67,12 +67,11 @@ export function pingIPFS(port = DEFAULT_PORT, host = DEFAULT_HOST) {
 
     client.on('data', (data) => {
       const response = parseResponse(data);
+      client.end();
       if (response.Msg === 'Pong') {
         resolve(true);
       } else {
-        reject(
-          new Error(`Received response '${response.Msg}' and note 'Pong'`)
-        );
+        reject(new Error(`Received response '${response.Msg}' and not 'Pong'`));
       }
     });
   });
@@ -97,6 +96,7 @@ export function addIPFS(
 
     client.on('data', (data) => {
       resolve(parseResponse(data).Msg);
+      client.end();
     });
   });
 }
@@ -123,6 +123,31 @@ export function getIPFS(
 
     client.on('data', (data) => {
       resolve(parseResponse(data).Msg);
+      client.end();
     });
+  });
+}
+
+/*
+ * Sets the specified setting to the given value within the IPFS daemon. Upon
+ * changing this setting, the daemon will restart to apply said setting.
+ */
+export function setIPFS(
+  setting: string,
+  value: string,
+  port = DEFAULT_PORT,
+  host = DEFAULT_HOST
+) {
+  return new Promise((resolve, reject) => {
+    const client = createClient(port, host, reject);
+
+    const request = new Request();
+    request.Class = DaemonRequest.SETTING;
+    request.Cid = setting;
+    request.Path = value;
+    issueRequest(client, request, reject);
+
+    client.end();
+    resolve(true);
   });
 }

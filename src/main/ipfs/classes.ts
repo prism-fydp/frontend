@@ -3,6 +3,7 @@ enum DaemonRequest {
   DELETE,
   GET,
   PING,
+  SETTING,
 }
 
 export default DaemonRequest;
