@@ -132,8 +132,8 @@ const Login = () => {
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.keyCode === 13 || event.which === 13) {
-      state.isButtonDisabled || handleLogin();
+    if (event.key === 'Enter' && !state.isButtonDisabled) {
+      handleLogin();
     }
   };
 
