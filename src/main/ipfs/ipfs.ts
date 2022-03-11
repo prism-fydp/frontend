@@ -152,3 +152,22 @@ export function setIPFS(
     resolve(true);
   });
 }
+
+/*
+ * Delete a file from IPFS. The CID of the file to delete is required.
+ * changing this setting, the daemon will restart to apply said setting.
+ */
+export function deleteIPFS(port = DEFAULT_PORT, host = DEFAULT_HOST) {
+  return new Promise((resolve, reject) => {
+    const client = createClient(port, host, reject);
+
+    const request = new Request();
+    request.Class = DaemonRequest.DELETE;
+    issueRequest(client, request, reject);
+
+    client.on('data', (data) => {
+      resolve(parseResponse(data).Msg);
+      client.end();
+    });
+  });
+}
