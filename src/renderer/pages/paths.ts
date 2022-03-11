@@ -9,7 +9,8 @@ const enum Paths {
   SIGNUP = '/signup',
   DASHBOARD = '/dashboard',
   LOGIN = '/login',
-  SETTINGS = 'settings',
+  SETTINGS = '/settings',
+  SEARCH = '/search',
 }
 
 export const currentPath = () => {

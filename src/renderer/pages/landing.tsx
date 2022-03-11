@@ -1,10 +1,6 @@
 import Typography from '@mui/material/Typography';
-import NavOverlay from '../components/nav_overlay';
 import logo from '../../../assets/logo.svg';
-import Login from './login';
-// import Signup from './signup';
 import Trybutton from '../components/try';
-import Search from './search';
 import Paths from './paths';
 
 export default function Landing() {
@@ -39,12 +35,19 @@ export default function Landing() {
               The essential Web3 platform for writing and reading anything
             </Typography>
           </div>
-          <div style={{ marginTop: 16 }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              width: 350,
+              marginTop: 16,
+              marginBottom: 16,
+            }}
+          >
             <Trybutton routepath={Paths.SIGNUP} buttonText="Try Prism" />
+            <Trybutton routepath={Paths.SEARCH} buttonText="Search Now" />
           </div>
         </div>
-        {/* <Signup /> */}
-        {/* <Login /> */}
       </div>
     </>
   );

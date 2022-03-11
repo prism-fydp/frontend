@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface TrybuttonProps {
   buttonText: string;
-  routepath: string;
+  routepath: any;
 }
 
 function Trybutton({
