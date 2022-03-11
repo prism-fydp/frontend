@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld('electron', {
         'file:save',
         'ipfs:get',
         'ipfs:add',
+        'ipfs:restore-node',
+        'ipfs:delete-node',
         'ipfs:setting-update',
         'pay',
       ];

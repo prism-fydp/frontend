@@ -53,6 +53,33 @@ export default function SettingsPage() {
           Save
         </button>
       </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          width: 400,
+          margin: 16,
+        }}
+      >
+        <button
+          style={{
+            backgroundColor: '#F85149',
+            color: 'white',
+            marginRight: '16px',
+          }}
+          type="button"
+          onClick={() => window.electron.ipcRenderer.send('ipfs:delete-node')}
+        >
+          Delete Local IPFS Node
+        </button>
+        <button
+          type="button"
+          onClick={() => window.electron.ipcRenderer.send('ipfs:restore-node')}
+        >
+          Re-Connect to IPFS Cluster
+        </button>
+      </div>
     </>
   );
 }
