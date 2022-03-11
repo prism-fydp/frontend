@@ -1,12 +1,7 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { read, write } from './file_io';
-<<<<<<< HEAD
-import { READ_DIR } from './paths';
-import { getIPFS, setIPFS } from '../ipfs/ipfs';
-=======
 import { READ_DIR, WRITE_DIR } from './paths';
-import { addIPFS, getIPFS } from '../ipfs/ipfs';
->>>>>>> Publish content
+import { addIPFS, getIPFS, setIPFS } from '../ipfs/ipfs';
 import openPaymentPage from '../pages/payment';
 
 function setupFileIPC(window: BrowserWindow) {
