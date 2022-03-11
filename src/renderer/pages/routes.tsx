@@ -8,6 +8,7 @@ import Dashboard from './dashboard';
 import Login from './login';
 import Settings from './settings';
 import Search from './search';
+import DeleteFiles from './delete_files';
 
 export default function AppRoutes() {
   return (
