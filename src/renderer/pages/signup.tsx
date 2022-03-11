@@ -109,7 +109,7 @@ const reducer = (state: State, action: Action): State => {
 async function queryDB(username: string, password: string, bio: string) {
   const query = `
   mutation NewUser {
-    insert_user_one(object: {bio: "${bio}", password: "${username}", username: "${password}"}) {
+    insert_user_one(object: {bio: "${bio}", password: "${password}", username: "${username}"}) {
       bio
       created_at
       id
