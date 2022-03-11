@@ -21,6 +21,7 @@ function FilePreviews({ fileSummaries }: Props) {
         <Card
           onClick={() => openPreview(fileSummary.cid)}
           key={fileSummary.cid}
+          style={{ width: 500, marginBottom: 32 }}
         >
           <CardHeader
             title={`${fileSummary.title}`}

@@ -3,14 +3,6 @@
   --font-display: "Raleway", sans-serif;
 }
 
-body {
-  font-family: 'Raleway';
-  height: 99vh;
-  display: grid;
-  justify-content: center;
-  align-items: center;
-}
-
 .shadow-solid-primary {
   box-shadow: 10px 10px var(--color-primary);
 }

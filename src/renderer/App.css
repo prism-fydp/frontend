@@ -5,7 +5,6 @@
 body {
   position: relative;
   color: white;
-  height: 100vh;
   background: linear-gradient(
     200.96deg,
     #36454F -29.09%,
@@ -17,6 +16,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  margin: 0px;
 }
 
 button {

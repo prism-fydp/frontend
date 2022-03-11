@@ -21,13 +21,27 @@ export default function MarkdownReader() {
   }, []);
 
   return (
-    <NavOverlay backButton>
-      <MDEditor
-        value={fileInfo.data}
-        hideToolbar
-        preview="preview"
-        height={window.innerHeight * 0.95}
-      />
-    </NavOverlay>
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#F5F5F5',
+        overflow: 'scroll',
+      }}
+    >
+      <NavOverlay backButton>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div style={{ width: '70vw', color: 'black' }}>
+            <MDEditor.Markdown source={fileInfo.data} />
+          </div>
+        </div>
+      </NavOverlay>
+    </div>
   );
 }

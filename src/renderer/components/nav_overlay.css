@@ -1,11 +1,7 @@
 .nav {
   display: flex;
   flex-direction: column;
-  overflow: scroll;
-  width: 98vw;
-  height: 100vh;
-  padding: 1vw;
-  margin: 0px;
+  width: 100vw;
 }
 
 .nav-bar {
@@ -13,6 +9,8 @@
   flex-direction: row;
   height: 6vh;
   width: inherit;
+  padding-top: 8px;
+  padding-bottom: 32px;
 }
 
 .nav-bar button {

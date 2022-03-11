@@ -36,6 +36,7 @@ function NavOverlay({
             flexDirection: 'row',
             alignSelf: 'flex-end',
             marginLeft: 'auto',
+            marginRight: 8,
             zIndex: 1,
           }}
         >

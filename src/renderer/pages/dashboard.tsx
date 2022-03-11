@@ -1,5 +1,10 @@
+import { useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
+import queryDB from 'renderer/utils/query_db';
+import FileSummary from 'renderer/components/file_summary';
+import FilePreviews from 'renderer/components/file_previews';
 import NavOverlay from '../components/nav_overlay';
+import UserManager from '../user_manager/user_manager';
 
 const ESSAY1 = `
 # This is a pretty interesting title
@@ -22,34 +27,40 @@ Duis volutpat tellus leo, id commodo risus fermentum eu. Curabitur blandit purus
 `;
 
 export default function Dashboard() {
-  const essays = [ESSAY1, ESSAY2];
+  const [essays, setEssays] = useState<FileSummary[]>([]);
+
+  const [username, bio, id]  = UserManager.get();
+  if (!essays.length) {
+    queryDB(username as string)
+      .then((result) => result.json())
+      .then(({ data, errors }) =>
+        errors ? Promise.reject(errors) : data.essay
+      )
+      .then(setEssays)
+      .catch(console.log);
+  }
 
   return (
     <div
-      style={{ width: '100vw', height: '100vh', backgroundColor: '#F5F5F5' }}
+      style={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#F5F5F5',
+        overflowY: 'scroll',
+      }}
     >
       <NavOverlay editorButton searchBar>
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            width: '70vw',
+            width: '100%',
+            height: '100%',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 32,
-            marginBottom: 32,
-            marginLeft: '15vw',
-            marginRight: '15vw',
             color: 'black',
           }}
         >
-          {essays.map((essay, i) => {
-            return (
-              <div key={`preview-${i.toString()}`} style={{ marginBottom: 32 }}>
-                <MDEditor.Markdown source={essay} />
-              </div>
-            );
-          })}
+          <FilePreviews fileSummaries={essays} />
         </div>
       </NavOverlay>
     </div>
