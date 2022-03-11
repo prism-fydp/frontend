@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
+import Trybutton from 'renderer/components/try';
 
 async function queryDB() {
   const query = `
@@ -93,6 +94,9 @@ function DeleteFiles(fileSummaries: Array<FileSummary>) {
   };
   return (
     <>
+      <div style={{ position: 'absolute', left: 32, top: 32 }}>
+        <Trybutton routepath={-1} buttonText="Back" />
+      </div>
       <div style={{ position: 'absolute', left: 260, top: 32 }}>
         <Typography color="#000000" variant="h3" component="div" align="center">
           Click the essay that you want to delete

@@ -18,8 +18,10 @@ export default function AppRoutes() {
       <Route path={Paths.DASHBOARD} element={Dashboard()} />
       <Route path={Paths.LANDING} element={Landing()} />
       <Route path={Paths.LOGIN} element={Login()} />
+      <Route path={Paths.SIGNUP} element={Signup()} />
       <Route path={Paths.SETTINGS} element={Settings()} />
       <Route path={Paths.SEARCH} element={Search()} />
+      <Route path={Paths.DELETE} element={DeleteFiles([])} />
     </Routes>
   );
 }
