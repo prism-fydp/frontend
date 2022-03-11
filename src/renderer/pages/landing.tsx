@@ -11,18 +11,38 @@ export default function Landing() {
   return (
     <>
       <div>
-        <div className="Hello">
-          <img width="200px" alt="logo" src={logo} />
+        <div style={{ position: 'absolute', left: 32, top: 32 }}>
+          <img width="64px" alt="logo" src={logo} />
         </div>
-        <Search />
-        <Typography color="#000000" variant="h1" component="div" gutterBottom>
-          Own your content, Own Yourself
-        </Typography>
-        <Typography color="#000000" variant="h3" gutterBottom component="div">
-          The essential Web3 platform for writing and reading anything
-        </Typography>
-        <Trybutton routepath={Paths.SIGNUP} buttonText="Try PRISM" />
-        <Trybutton routepath={Paths.LOGIN} buttonText="Log In" />
+        <div style={{ position: 'absolute', right: 32, top: 32 }}>
+          <Trybutton routepath={Paths.LOGIN} buttonText="Sign In" />
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <Typography color="#000000" variant="h3" component="div" gutterBottom>
+            Own Your Content, Own Yourself
+          </Typography>
+          <div style={{ width: 425 }}>
+            <Typography
+              color="#000000"
+              variant="h5"
+              gutterBottom
+              component="div"
+            >
+              The essential Web3 platform for writing and reading anything
+            </Typography>
+          </div>
+          <div style={{ marginTop: 16 }}>
+            <Trybutton routepath={Paths.SIGNUP} buttonText="Try Prism" />
+          </div>
+        </div>
         {/* <Signup /> */}
         {/* <Login /> */}
       </div>

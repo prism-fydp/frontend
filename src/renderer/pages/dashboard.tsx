@@ -20,8 +20,8 @@ export default function Dashboard() {
         <Typography color="#000000" variant="h3" gutterBottom component="div">
           The essential Web3 platform for writing and reading anything
         </Typography>
-        <Trybutton routepath={Paths.SIGNUP} buttonText="Try PRISM" />
-        <Trybutton routepath={Paths.LOGIN} buttonText="Log In" />
+        <Trybutton routepath={Paths.SIGNUP} buttonText="Try Prism" />
+        <Trybutton routepath={Paths.LOGIN} buttonText="Sign in" />
         {/* <Signup /> */}
       </div>
     </NavOverlay>
