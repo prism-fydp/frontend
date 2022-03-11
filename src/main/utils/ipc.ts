@@ -85,6 +85,7 @@ function setupIpfsIPC(window: BrowserWindow) {
     if (savePath.length) {
       write(savePath, data);
       addIPFS(savePath)
+        .then((cid) => (typeof cid === 'string' ? cid : ''))
         .then((cid) => window.webContents.send('ipfs:added', cid))
         .catch(() => window.webContents.send('ipfs:added', ''));
     }
