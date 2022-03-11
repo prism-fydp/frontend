@@ -8,10 +8,13 @@ export interface NavButtonProps {
 export default function NavButton({ path, name }: NavButtonProps) {
   const nav = useNavigate();
   return (
-    <button className="nav-button" type="button" onClick={() => nav(path)}>
+    <button
+      style={{ fontFamily: 'Raleway' }}
+      className="nav-button"
+      type="button"
+      onClick={() => nav(path)}
+    >
       {name}
     </button>
   );
 }
-
-// {!hideReaderButton && <NavButton path={Paths.READER} name="Reader" />}

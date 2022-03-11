@@ -23,6 +23,7 @@ function Trybutton({
                   hover:from-white hover:to-gray-100
                   hover:text-black hover:border-black
                   "
+      style={{ fontFamily: 'Raleway' }}
       type="button"
       onClick={() => nav(routepath)}
     >

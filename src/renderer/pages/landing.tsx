@@ -52,15 +52,3 @@ export default function Landing() {
     </>
   );
 }
-// .search {
-// 	padding: 0 30px;
-// 	font-size: 18px;
-// 	width: 60%;
-// 	max-width: 400px;
-// 	height: 80px;
-// 	border: 1px solid darken(white, 30%);
-// 	border-radius: 20px 0 0 20px;
-// }
-
-// className={styles.button}
-// onClick={() => connect(setUserAddress)}
