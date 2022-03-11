@@ -1,5 +1,6 @@
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Trybutton from '../components/try';
 
 const DEFAULT_LABEL = 'IPFS Max Storage Amount (GB)';
@@ -22,6 +23,7 @@ export default function SettingsPage() {
       setError(true);
     }
   };
+  const nav = useNavigate();
 
   const handler = (event: any) => setIpfsStorageMax(event.target.value);
 
@@ -78,6 +80,53 @@ export default function SettingsPage() {
           onClick={() => window.electron.ipcRenderer.send('ipfs:restore-node')}
         >
           Re-Connect to IPFS Cluster
+        </button>
+      </div>
+      <div>
+        {/* <button
+            style={{
+              backgroundColor: '#F85149',
+              color: 'white',
+              marginRight: '16px',
+            }}
+            type="button"
+            onClick={() => nav}
+          >
+            Delete Local IPFS Node
+          </button> */}
+        <button
+          style={{
+            fontFamily: 'Raleway',
+            backgroundColor: '#FFFFFF',
+            color: 'black',
+            marginRight: '16px',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            width: 400,
+            margin: 16,
+          }}
+          type="button"
+          onClick={() => nav('/delete_files')}
+        >
+          Delete Essays
+        </button>
+        <button
+          style={{
+            fontFamily: 'Raleway',
+            backgroundColor: '#FFFFFF',
+            color: 'black',
+            marginRight: '16px',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            width: 400,
+            margin: 16,
+          }}
+          type="button"
+          onClick={() => nav('/')}
+        >
+          Sign Out
         </button>
       </div>
     </>

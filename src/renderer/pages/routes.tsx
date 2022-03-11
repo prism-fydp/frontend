@@ -20,6 +20,7 @@ export default function AppRoutes() {
       <Route path={Paths.SIGNUP} element={Signup()} />
       <Route path={Paths.SETTINGS} element={Settings()} />
       <Route path={Paths.SEARCH} element={Search()} />
+      <Route path={Paths.DELETE} element={DeleteFiles([])} />
     </Routes>
   );
 }

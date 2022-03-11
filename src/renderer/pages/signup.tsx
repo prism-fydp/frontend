@@ -141,10 +141,8 @@ const Signup = () => {
     if (
       state.username.trim() &&
       state.password.trim() &&
-      // state.password.length >= 5 &&
-      // state.password.length <= 16 &&
-      // state.username.length >= 5 &&
-      // state.username.length <= 16 &&
+      state.username.length >= 5 &&
+      state.username.length <= 16 &&
       state.password === state.confirmpassword
     ) {
       dispatch({

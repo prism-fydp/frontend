@@ -11,6 +11,7 @@ const enum Paths {
   LOGIN = '/login',
   SETTINGS = '/settings',
   SEARCH = '/search',
+  DELETE = '/delete_files',
 }
 
 export const currentPath = () => {

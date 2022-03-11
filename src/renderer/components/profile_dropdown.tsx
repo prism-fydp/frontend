@@ -3,7 +3,7 @@ import Paths from '../pages/paths';
 import Dropdown from './dropdown';
 import profile from '../../../assets/profile/profile.png';
 
-export default function ProfileDropdown() {
+export default function ProfileDropdown({ onSignOut }) {
   const navigate = useNavigate();
   const dropdownOptions = [
     {
@@ -16,7 +16,10 @@ export default function ProfileDropdown() {
     {
       id: 1,
       text: 'Sign Out',
-      onClick: () => navigate(Paths.LANDING),
+      onClick: () => {
+        onSignOut();
+        navigate(Paths.LANDING);
+      },
     },
   ];
 
