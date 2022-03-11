@@ -4,6 +4,7 @@ import NavOverlay from '../components/nav_overlay';
 import FileInfo from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Paths from './paths';
+import '../components/try.css';
 
 /*
  * A markdown editor. Markdown text state is maintained within the props.
