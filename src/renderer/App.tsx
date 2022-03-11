@@ -6,7 +6,8 @@ import Paths, { currentPath, isCurrentPath } from './pages/paths';
 import FileInfo, { isValidFileInfo } from './file_management/file_info';
 import FileManager from './file_management/file_manager';
 import AppRoutes from './pages/routes';
-import { setIPFS } from '../main/ipfs/ipfs';
+import publish from './file_management/file_publish';
+import UserManager from './user_manager/user_manager';
 
 /*
  * Create a listener for opening a file
@@ -44,6 +45,60 @@ window.electron.ipcRenderer.on('file:set-path', (savePath) => {
 
     const toSave: FileInfo = { ...fileInfo.info.current, filePath: savePath };
     FileManager.set(Paths.EDITOR, toSave);
+  }
+});
+
+window.electron.ipcRenderer.on('ipfs:add', () => {
+  if (isCurrentPath(Paths.EDITOR)) {
+    publish().catch(console.error);
+  }
+});
+
+async function addEssay(cid: string, fileInfo: FileInfo) {
+  const authorID = UserManager.get()[2];
+
+  const perIdx = fileInfo.filePath.lastIndexOf('.');
+  const sepIdx = fileInfo.filePath.lastIndexOf('/') + 1;
+
+  const query = `
+    mutation addEssay {
+      insert_essay(objects: {
+        author: ${authorID},
+        cid: "${cid}",
+        title: "${fileInfo.filePath.substring(sepIdx, perIdx)}",
+      }) {
+        affected_rows
+      }
+    }
+  `;
+
+  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
+    method: 'POST',
+    credentials: 'include',
+    headers: new Headers({
+      'x-hasura-admin-secret':
+        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
+    }),
+    body: JSON.stringify({
+      query,
+      variables: {},
+      operationName: 'addEssay',
+    }),
+  });
+}
+
+window.electron.ipcRenderer.on('ipfs:added', (cid) => {
+  const fileInfo = FileManager.get(Paths.EDITOR);
+  if (fileInfo && typeof cid === 'string' && cid.length) {
+    addEssay(cid, fileInfo.info.current)
+      .then((result) => result.json())
+      .then(({ data, errors }) =>
+        errors ? Promise.reject(errors) : data.insert_essay.affected_rows
+      )
+      .then(console.log)
+      .catch(console.error);
+  } else {
+    alert('Failed to publish. Please try again.');
   }
 });
 

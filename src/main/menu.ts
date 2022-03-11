@@ -5,9 +5,11 @@ import {
   MenuItemConstructorOptions,
   dialog,
   app,
+  ipcMain,
 } from 'electron';
 import { addIPFS, getIPFS, pingIPFS, setIPFS } from './ipfs/ipfs';
 import { read } from './utils/file_io';
+import { READ_DIR, WRITE_DIR } from './utils/paths';
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
@@ -85,6 +87,12 @@ export default class MenuBuilder {
           label: '&Save As',
           accelerator: isDarwin ? 'Command+Shift+S' : 'Ctrl+Shift+S',
           click: () => this.selectSavePath(),
+        },
+        { type: 'separator' },
+        {
+          label: '&Publish',
+          accelerator: isDarwin ? 'Command+Alt+S' : 'Ctrl+Alt+S',
+          click: () => this.mainWindow.webContents.send('ipfs:add'),
         },
       ],
     };
@@ -177,7 +185,10 @@ export default class MenuBuilder {
 
   private selectSavePath(): void {
     dialog
-      .showSaveDialog(this.mainWindow, { properties: ['createDirectory'] })
+      .showSaveDialog(this.mainWindow, {
+        properties: ['createDirectory'],
+        defaultPath: WRITE_DIR,
+      })
       .then((choice) =>
         choice.canceled || !choice.filePath ? Promise.reject() : choice.filePath
       )
@@ -206,7 +217,10 @@ export default class MenuBuilder {
 
   private addIPFS(): void {
     dialog
-      .showOpenDialog(this.mainWindow, { properties: ['openFile'] })
+      .showOpenDialog(this.mainWindow, {
+        properties: ['openFile'],
+        defaultPath: WRITE_DIR,
+      })
       .then((choice) =>
         choice.canceled ? Promise.reject() : addIPFS(choice.filePaths[0])
       )
@@ -229,6 +243,7 @@ export default class MenuBuilder {
     dialog
       .showOpenDialog(this.mainWindow, {
         properties: ['openDirectory', 'createDirectory'],
+        defaultPath: READ_DIR,
       })
       .then((choice) =>
         choice.canceled || !choice.filePaths[0].length

@@ -26,4 +26,8 @@ export default abstract class UserManager {
     this.bio = bio;
     this.id = parseInt(id, 10);
   }
+
+  static isValidUser() {
+    return this.username.length && this.id !== -1;
+  }
 }

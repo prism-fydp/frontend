@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('electron', {
       const validChannels = [
         'file:save',
         'ipfs:get',
+        'ipfs:add',
         'ipfs:setting-update',
         'pay',
       ];
@@ -18,7 +19,8 @@ contextBridge.exposeInMainWorld('electron', {
         'file:open',
         'file:save',
         'file:set-path',
-        'ipfs:get',
+        'ipfs:add',
+        'ipfs:added',
       ];
       if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
