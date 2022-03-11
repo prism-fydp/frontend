@@ -10,6 +10,7 @@ interface Props {
   backButton?: boolean;
   editorButton?: boolean;
   searchBar?: boolean;
+  onSignOut?: any;
 }
 
 function NavOverlay({
@@ -17,6 +18,7 @@ function NavOverlay({
   backButton,
   editorButton,
   searchBar,
+  onSignOut,
 }: React.PropsWithChildren<Props>) {
   const searchButton = (
     <div style={{ marginRight: 16 }}>
@@ -41,7 +43,7 @@ function NavOverlay({
           }}
         >
           {searchBar && searchButton}
-          <ProfileDropdown />
+          <ProfileDropdown onSignOut={onSignOut} />
         </div>
       </div>
       {children}
@@ -56,6 +58,7 @@ NavOverlay.defaultProps = {
   backButton: false,
   editorButton: false,
   searchBar: false,
+  onSignOut: () => {},
 };
 
 export default NavOverlay;

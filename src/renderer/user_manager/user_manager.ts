@@ -3,7 +3,7 @@ export default abstract class UserManager {
 
   private static bio: string = '';
 
-  private static id: number = 10;
+  private static id: number = 58;
 
   static get() {
     return [this.username, this.bio, this.id];

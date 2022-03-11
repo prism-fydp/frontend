@@ -3,7 +3,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
 import FileSummary from './file_summary';
-import queryDB from '../utils/query_db';
+import { querySearch } from '../utils/query_db';
 
 interface Props {
   setFileSummaries: (f: FileSummary[]) => void;
@@ -55,7 +55,7 @@ function SearchBar({ setFileSummaries }: Props) {
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      queryDB(text)
+      querySearch(text)
         .then((result) => result.json())
         .then(({ data, errors }) =>
           errors ? Promise.reject(errors) : data.essay

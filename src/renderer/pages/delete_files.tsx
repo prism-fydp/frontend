@@ -2,7 +2,6 @@ import { useReducer, useState } from 'react';
 
 import UserManager from 'renderer/user_manager/user_manager';
 import { useNavigate } from 'react-router-dom';
-import FileSummary from '../components/file_summary';
 
 import {
   Divider,
@@ -12,32 +11,8 @@ import {
   Typography,
 } from '@mui/material';
 import Trybutton from 'renderer/components/try';
-
-async function queryDB() {
-  const query = `
-  query MyQuery {
-    essay(where: {user: {id: {_eq: ${UserManager.get()[2]}}}}) {
-        cid
-        title
-        created_at
-    }
-  }
-  `;
-
-  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
-    method: 'POST',
-    credentials: 'include',
-    headers: new Headers({
-      'x-hasura-admin-secret':
-        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
-    }),
-    body: JSON.stringify({
-      query,
-      variables: {},
-      operationName: 'MyQuery',
-    }),
-  });
-}
+import FileSummary from '../components/file_summary';
+import { queryById } from '../utils/query_db';
 
 async function queryDB2(cid: string) {
   const query = `
@@ -73,7 +48,7 @@ function DeleteFiles(fileSummaries: Array<FileSummary>) {
   const [enabled, setEnabled] = useState(false);
 
   const handleFirstSearch = () => {
-    queryDB()
+    queryById(UserManager.get()[2] as number)
       .then((result) => result.json())
       .then(({ data, errors }) =>
         errors ? Promise.reject(errors) : data.essay
@@ -97,56 +72,50 @@ function DeleteFiles(fileSummaries: Array<FileSummary>) {
       <div style={{ position: 'absolute', left: 32, top: 32 }}>
         <Trybutton routepath={-1} buttonText="Back" />
       </div>
-      <div style={{ position: 'absolute', left: 260, top: 32 }}>
-        <Typography color="#000000" variant="h3" component="div" align="center">
+      <div
+        style={{
+          display: 'flex',
+          width: '80vw',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography color="#000000" variant="h5" component="div" align="center">
           Click the essay that you want to delete
         </Typography>
+        <button type="button" onClick={handleFirstSearch}>
+          Show me my essays
+        </button>
+        {enabled && (
+          <List component="nav" aria-label="mailbox folders">
+            {essays.map((essay) => (
+              <div key={essay.cid}>
+                <ListItemButton
+                  style={{
+                    // position: 'absolute',
+                    // left: 260,
+                    // top: 32,
+                    color: '#000000',
+                  }}
+                  onClick={() => {
+                    queryDB2(essay.cid)
+                      .then((result) => result.json())
+                      .then(({ data, errors }) =>
+                        errors ? Promise.reject(errors) : data.delete_essay
+                      )
+                      .catch(() => []);
+                    remove(essay);
+                  }}
+                >
+                  <ListItemText primary={essay.title} />
+                </ListItemButton>
+                <Divider />
+                {/* <button>Remove</button> <Divider /> */}
+              </div>
+            ))}
+          </List>
+        )}
       </div>
-      <button
-        style={{ position: 'absolute', left: 260, top: 130 }}
-        type="button"
-        onClick={handleFirstSearch}
-      >
-        Show me my essays
-      </button>
-      {/* <p>{essay}</p> */}
-      {enabled && (
-        <List
-          style={{
-            position: 'absolute',
-            left: 260,
-            top: 200,
-          }}
-          component="nav"
-          aria-label="mailbox folders"
-        >
-          {essays.map((essay) => (
-            <div key={essay.cid}>
-              <ListItemButton
-                style={{
-                  // position: 'absolute',
-                  // left: 260,
-                  // top: 32,
-                  color: '#000000',
-                }}
-                onClick={() => {
-                  queryDB2(essay.cid)
-                    .then((result) => result.json())
-                    .then(({ data, errors }) =>
-                      errors ? Promise.reject(errors) : data.delete_essay
-                    )
-                    .catch(() => []);
-                  remove(essay);
-                }}
-              >
-                <ListItemText primary={essay.title} />
-              </ListItemButton>
-              <Divider />
-              {/* <button>Remove</button> <Divider /> */}
-            </div>
-          ))}
-        </List>
-      )}
     </>
   );
 }
