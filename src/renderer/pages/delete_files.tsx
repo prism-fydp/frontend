@@ -1,112 +1,16 @@
-import React, { useReducer, useEffect } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import CardHeader from '@material-ui/core/CardHeader';
-import Button from '@material-ui/core/Button';
+import { useReducer, useState } from 'react';
+
 import UserManager from 'renderer/user_manager/user_manager';
 import { useNavigate } from 'react-router-dom';
-import { Divider, Typography } from '@mui/material';
-import FileSummary from 'renderer/components/file_summary';
-import Trybutton from '../components/try';
-import Paths from './paths';
+import FileSummary from '../components/file_summary';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      width: 400,
-      margin: `${theme.spacing(0)} auto`,
-    },
-    loginBtn: {
-      marginTop: theme.spacing(2),
-      flexGrow: 1,
-    },
-    header: {
-      textAlign: 'center',
-      background: '#212121',
-      color: '#fff',
-    },
-    card: {
-      marginTop: theme.spacing(10),
-    },
-  })
-);
-
-// state type
-
-type State = {
-  username: Array<FileSummary>;
-  password: string;
-  confirmpassword: string;
-  bio: string;
-  isButtonDisabled: boolean;
-  helperText: string;
-  isError: boolean;
-};
-
-const initialState: State = {
-  username: [],
-  password: '',
-  bio: '',
-  confirmpassword: '',
-  isButtonDisabled: true,
-  helperText: '',
-  isError: false,
-};
-
-type Action =
-  | { type: 'setUsername'; payload: Array<FileSummary> }
-  | { type: 'setPassword'; payload: string }
-  | { type: 'setConfirmPassword'; payload: string }
-  | { type: 'setBio'; payload: string }
-  | { type: 'setIsButtonDisabled'; payload: boolean }
-  | { type: 'loginSuccess'; payload: string }
-  | { type: 'loginFailed'; payload: string }
-  | { type: 'setIsError'; payload: boolean };
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'setUsername':
-      return {
-        ...state,
-        username: action.payload,
-      };
-    case 'setPassword':
-      return {
-        ...state,
-        password: action.payload,
-      };
-    case 'setConfirmPassword':
-      return {
-        ...state,
-        confirmpassword: action.payload,
-      };
-    case 'setBio':
-      return {
-        ...state,
-        bio: action.payload,
-      };
-    case 'setIsButtonDisabled':
-      return {
-        ...state,
-        isButtonDisabled: action.payload,
-      };
-    case 'setIsError':
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    default:
-      return {
-        ...state,
-        isError: true,
-      };
-  }
-};
+import {
+  Divider,
+  List,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 
 async function queryDB() {
   const query = `
@@ -133,60 +37,114 @@ async function queryDB() {
     }),
   });
 }
-const DeleteFiles = () => {
-  const nav = useNavigate();
-  const classes = useStyles();
-  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const handleSignup = () => {
+async function queryDB2(cid: string) {
+  const query = `
+  mutation MyMutation {
+    delete_essay(where: {cid: {_eq: "${cid}"}}) {
+      affected_rows
+    }
+  }
+  `;
+
+  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
+    method: 'POST',
+    credentials: 'include',
+    headers: new Headers({
+      'x-hasura-admin-secret':
+        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
+    }),
+    body: JSON.stringify({
+      query,
+      variables: {},
+      operationName: 'MyMutation',
+    }),
+  });
+}
+
+// interface Props {
+//   fileSummaries: Array<FileSummary>;
+// }
+
+function DeleteFiles(fileSummaries: Array<FileSummary>) {
+  // const nav = useNavigate();
+  const [essays, setEssays] = useState(fileSummaries);
+  const [enabled, setEnabled] = useState(false);
+
+  const handleFirstSearch = () => {
     queryDB()
       .then((result) => result.json())
       .then(({ data, errors }) =>
         errors ? Promise.reject(errors) : data.essay
       )
       .then((d) => {
-        dispatch({
-          type: 'setUsername',
-          payload: d,
-        });
+        setEssays(d);
+        setEnabled(true);
+        console.log(d);
         return d;
       })
-      // .then(JSON.parse(data))
       .catch(() => []);
-    // export default res;
   };
 
+  const remove = (item: FileSummary) => {
+    console.log(item);
+    const filteredArr = essays.filter((el) => el.cid !== item.cid);
+    setEssays(filteredArr);
+  };
   return (
     <>
-      <Typography color="#000000" variant="h1" component="div" gutterBottom>
-        Delete your essays from the IPFS Cluster
-      </Typography>
-      <button onClick={handleSignup}>hi</button>
+      <div style={{ position: 'absolute', left: 260, top: 32 }}>
+        <Typography color="#000000" variant="h3" component="div" align="center">
+          Click the essay that you want to delete
+        </Typography>
+      </div>
+      <button
+        style={{ position: 'absolute', left: 260, top: 130 }}
+        type="button"
+        onClick={handleFirstSearch}
+      >
+        Show me my essays
+      </button>
       {/* <p>{essay}</p> */}
-      {state.username.map((essay) => (
-        <div key={essay.cid}>
-          {essay.title}
-          <button>Remove</button>{' '}
-          <Divider />
-        </div>
-      ))}
+      {enabled && (
+        <List
+          style={{
+            position: 'absolute',
+            left: 260,
+            top: 200,
+          }}
+          component="nav"
+          aria-label="mailbox folders"
+        >
+          {essays.map((essay) => (
+            <div key={essay.cid}>
+              <ListItemButton
+                style={{
+                  // position: 'absolute',
+                  // left: 260,
+                  // top: 32,
+                  color: '#000000',
+                }}
+                onClick={() => {
+                  queryDB2(essay.cid)
+                    .then((result) => result.json())
+                    .then(({ data, errors }) =>
+                      errors ? Promise.reject(errors) : data.delete_essay
+                    )
+                    .catch(() => []);
+                  remove(essay);
+                }}
+              >
+                <ListItemText primary={essay.title} />
+              </ListItemButton>
+              <Divider />
+              {/* <button>Remove</button> <Divider /> */}
+            </div>
+          ))}
+        </List>
+      )}
     </>
   );
-};
+}
 
 export default DeleteFiles;
-
-// {
-//   "essay": [
-//       {
-//           "cid": "aldsfjk",
-//           "title": "murica",
-//           "created_at": "2022-03-10"
-//       },
-//       {
-//           "cid": "QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj",
-//           "title": "Demo",
-//           "created_at": "2022-03-10"
-//       }
-//   ]
-// }

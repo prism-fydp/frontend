@@ -14,7 +14,7 @@ export default function AppRoutes() {
       <Route path={Paths.READER} element={MarkdownReader()} />
       <Route path={Paths.EDITOR} element={MarkdownEditor()} />
       <Route path={Paths.DASHBOARD} element={Dashboard()} />
-      <Route path={Paths.LANDING} element={DeleteFiles()} />
+      <Route path={Paths.LANDING} element={Landing()} />
       <Route path={Paths.LOGIN} element={Login()} />
     </Routes>
   );
