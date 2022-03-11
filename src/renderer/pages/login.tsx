@@ -7,9 +7,10 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
+import { useNavigate } from 'react-router-dom';
+import UserManager from 'renderer/user_manager/user_manager';
 import Trybutton from '../components/try';
 import Paths from './paths';
-import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -101,6 +102,31 @@ const reducer = (state: State, action: Action): State => {
       };
   }
 };
+async function queryDB(username: string, password: string) {
+  const query = `
+  query MyQuery {
+    user(where: {username: {_eq: "${username}"}, password: {_eq: "${password}"}}) {
+      username
+      id
+      bio
+    }
+  }
+  `;
+
+  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
+    method: 'POST',
+    credentials: 'include',
+    headers: new Headers({
+      'x-hasura-admin-secret':
+        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
+    }),
+    body: JSON.stringify({
+      query,
+      variables: {},
+      operationName: 'MyQuery',
+    }),
+  });
+}
 
 const Login = () => {
   const nav = useNavigate();
@@ -122,17 +148,29 @@ const Login = () => {
   }, [state.username, state.password]);
 
   const handleLogin = () => {
-    // queryDB(state.username, state.password, state.bio)
-    //   .then((result) => result.json())
-    //   .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
-    //   .then(function (data): any {
-    //     UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
-    //     return data;
-    //   })
-    //   .then(console.log)
-    //   .catch(console.log);
-    // // export default res;
-    nav(Paths.DASHBOARD);
+    queryDB(state.username, state.password)
+      .then((result) => result.json())
+      .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
+      .then(function (data): any {
+        // eslint-disable-next-line promise/always-return
+        if (data.user.length === 0) {
+          dispatch({
+            type: 'loginFailed',
+            payload: 'Invalid username or password',
+          });
+          console.log('Login failed');
+        } else {
+          UserManager.setUser(
+            state.username,
+            data.user[0].bio,
+            data.user[0].id
+          );
+          console.log('Login success');
+          nav(Paths.DASHBOARD);
+        }
+      })
+      .then(console.log)
+      .catch(console.log);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
