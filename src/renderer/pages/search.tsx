@@ -14,7 +14,7 @@ export default function Search() {
         height: '100vh',
         display: 'flex',
         justifyContent: 'center',
-        overflow: 'scroll',
+        overflowY: 'scroll',
       }}
     >
       <div style={{ position: 'absolute', top: 32, left: 16 }}>
