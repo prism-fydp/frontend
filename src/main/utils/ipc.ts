@@ -1,7 +1,8 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { existsSync } from 'fs';
 import { read, write } from './file_io';
 import { READ_DIR, WRITE_DIR } from './paths';
-import { addIPFS, getIPFS, setIPFS } from '../ipfs/ipfs';
+import { addIPFS, deleteIPFS, getIPFS, setIPFS } from '../ipfs/ipfs';
 import openPaymentPage from '../pages/payment';
 
 function setupFileIPC(window: BrowserWindow) {
@@ -20,7 +21,10 @@ function setupFileIPC(window: BrowserWindow) {
     // wants to save to.
     if (!savePath.length) {
       savePath = await dialog
-        .showSaveDialog({ properties: ['createDirectory'] })
+        .showSaveDialog({
+          properties: ['createDirectory'],
+          defaultPath: WRITE_DIR,
+        })
         .then((choice) => {
           return choice.canceled || !choice.filePath ? '' : choice.filePath;
         })
@@ -49,11 +53,12 @@ function setupBrowserIPC() {
 function setupIpfsIPC(window: BrowserWindow) {
   ipcMain.on('ipfs:get', async (event, cid) => {
     getIPFS(cid, READ_DIR)
-      .then((path) => {
-        return typeof path === 'string'
+      .then((path) => (typeof path === 'string' ? path : Promise.reject()))
+      .then((path) =>
+        existsSync(path)
           ? event.reply('file:open', { filePath: path, data: read(path) })
-          : Promise.reject();
-      })
+          : event.reply('file:open', { filePath: '', data: path })
+      )
       .catch(() =>
         event.reply('file:open', { filePath: '', data: 'Failed to download' })
       );
@@ -89,6 +94,14 @@ function setupIpfsIPC(window: BrowserWindow) {
         .then((cid) => window.webContents.send('ipfs:added', cid))
         .catch(() => window.webContents.send('ipfs:added', ''));
     }
+  });
+
+  ipcMain.on('ipfs:delete-node', async () => {
+    deleteIPFS();
+  });
+
+  ipcMain.on('ipfs:restore-node', async () => {
+    setIPFS('ipfs:active', '');
   });
 }
 
