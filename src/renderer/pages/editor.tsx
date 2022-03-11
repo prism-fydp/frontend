@@ -32,12 +32,20 @@ export default function MarkdownEditor() {
   };
 
   return (
-    <NavOverlay backButton>
-      <MDEditor
-        value={fileInfo.data}
-        onChange={setData}
-        height={window.innerHeight * 0.9}
-      />
-    </NavOverlay>
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#F5F5F5',
+      }}
+    >
+      <NavOverlay backButton>
+        <MDEditor
+          value={fileInfo.data}
+          onChange={setData}
+          height={window.innerHeight * 0.9}
+        />
+      </NavOverlay>
+    </div>
   );
 }
