@@ -68,30 +68,36 @@ export default function Search() {
         height: '100vh',
         display: 'flex',
         justifyContent: 'center',
-        overflow: 'scroll',
+        overflowY: 'scroll',
       }}
     >
       <div style={{ position: 'absolute', top: 32, left: 16 }}>
         <TryButton routepath={-1} buttonText="Back" />
       </div>
       <div style={{ width: 500, marginTop: 32 }}>
-        <SearchBar setFileSummaries={setFileSummaries} />
-        <FormControl>
-          <InputLabel id="search-all">All By:</InputLabel>
-          <Select
-            labelId="search-all-select"
-            value={ordering}
-            autoWidth
-            onChange={handleSelection}
-          >
-            <MenuItem value="created_at: asc">
-              Date <ArrowUpward />
-            </MenuItem>
-            <MenuItem value="created_at: desc">
-              Date <ArrowDownward />
-            </MenuItem>
-          </Select>
-        </FormControl>
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: 400 }}>
+            <SearchBar setFileSummaries={setFileSummaries} />
+          </div>
+          <div style={{ width: 100, marginRight: 20 }}>
+            <FormControl fullWidth>
+              <InputLabel id="search-all">All By:</InputLabel>
+              <Select
+                labelId="search-all-select"
+                value={ordering}
+                autoWidth
+                onChange={handleSelection}
+              >
+                <MenuItem value="created_at: asc">
+                  Date <ArrowUpward />
+                </MenuItem>
+                <MenuItem value="created_at: desc">
+                  Date <ArrowDownward />
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
         <div style={{ marginTop: 32 }}>
           <FilePreviews fileSummaries={fileSummaries} />
         </div>
