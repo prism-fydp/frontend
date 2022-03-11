@@ -8,9 +8,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 import UserManager from 'renderer/user_manager/user_manager';
 import { useNavigate } from 'react-router-dom';
+import { Divider, Typography } from '@mui/material';
+import FileSummary from 'renderer/components/file_summary';
 import Trybutton from '../components/try';
 import Paths from './paths';
-import { Typography } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // state type
 
 type State = {
-  username: string;
+  username: Array<FileSummary>;
   password: string;
   confirmpassword: string;
   bio: string;
@@ -48,7 +49,7 @@ type State = {
 };
 
 const initialState: State = {
-  username: '',
+  username: [],
   password: '',
   bio: '',
   confirmpassword: '',
@@ -58,7 +59,7 @@ const initialState: State = {
 };
 
 type Action =
-  | { type: 'setUsername'; payload: string }
+  | { type: 'setUsername'; payload: Array<FileSummary> }
   | { type: 'setPassword'; payload: string }
   | { type: 'setConfirmPassword'; payload: string }
   | { type: 'setBio'; payload: string }
@@ -107,14 +108,13 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-async function queryDB(username: string, password: string, bio: string) {
+async function queryDB() {
   const query = `
-  mutation NewUser {
-    insert_user_one(object: {bio: "${bio}", password: "${username}", username: "${password}"}) {
-      bio
-      created_at
-      id
-      username
+  query MyQuery {
+    essay(where: {user: {id: {_eq: ${UserManager.get()[2]}}}}) {
+        cid
+        title
+        created_at
     }
   }
   `;
@@ -129,162 +129,64 @@ async function queryDB(username: string, password: string, bio: string) {
     body: JSON.stringify({
       query,
       variables: {},
-      operationName: 'NewUser',
+      operationName: 'MyQuery',
     }),
   });
 }
-const Signup = () => {
-  <Typography color="#000000" variant="h1" component="div" gutterBottom>
-    Delete your essays from the IPFS Cluster
-  </Typography>;
+const DeleteFiles = () => {
   const nav = useNavigate();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    if (
-      state.username.trim() &&
-      state.password.trim() &&
-      state.password === state.confirmpassword
-    ) {
-      dispatch({
-        type: 'setIsButtonDisabled',
-        payload: false,
-      });
-    } else {
-      dispatch({
-        type: 'setIsButtonDisabled',
-        payload: true,
-      });
-    }
-  }, [state.username, state.password, state.confirmpassword]);
-
   const handleSignup = () => {
-    queryDB(state.username, state.password, state.bio)
+    queryDB()
       .then((result) => result.json())
-      .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
-      .then(function (data): any {
-        UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
-        return data;
+      .then(({ data, errors }) =>
+        errors ? Promise.reject(errors) : data.essay
+      )
+      .then((d) => {
+        dispatch({
+          type: 'setUsername',
+          payload: d,
+        });
+        return d;
       })
-      .then(console.log)
-      .catch(console.log);
+      // .then(JSON.parse(data))
+      .catch(() => []);
     // export default res;
-    nav(Paths.DASHBOARD);
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !state.isButtonDisabled) {
-      handleSignup();
-    }
-  };
-
-  const handleUsernameChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setUsername',
-      payload: event.target.value,
-    });
-  };
-
-  const handlePasswordChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setPassword',
-      payload: event.target.value,
-    });
-  };
-  const handleConfirmPasswordChange: React.ChangeEventHandler<
-    HTMLInputElement
-  > = (event) => {
-    dispatch({
-      type: 'setConfirmPassword',
-      payload: event.target.value,
-    });
-  };
-  const handleBioChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setBio',
-      payload: event.target.value,
-    });
-  };
   return (
     <>
-      <Trybutton routepath={Paths.LANDING} buttonText="Back" />
-      <form className={classes.container} noValidate autoComplete="off">
-        <Card className={classes.card}>
-          <CardHeader className={classes.header} title="Sign up" />
-          <CardContent>
-            <div>
-              <TextField
-                error={state.isError}
-                fullWidth
-                id="username"
-                type="email"
-                label="Username"
-                placeholder="Username"
-                margin="normal"
-                onChange={handleUsernameChange}
-                onKeyPress={handleKeyPress}
-              />
-              <TextField
-                error={state.isError}
-                fullWidth
-                id="password"
-                type="password"
-                label="Password"
-                placeholder="Password"
-                margin="normal"
-                helperText={state.helperText}
-                onChange={handlePasswordChange}
-                onKeyPress={handleKeyPress}
-              />
-              <TextField
-                error={state.isError}
-                fullWidth
-                id="password"
-                type="password"
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                margin="normal"
-                helperText={state.helperText}
-                onChange={handleConfirmPasswordChange}
-                onKeyPress={handleKeyPress}
-              />
-              <TextField
-                error={state.isError}
-                fullWidth
-                id="bio"
-                type="text"
-                label="Bio (Optional)"
-                placeholder="Enter your bio"
-                margin="normal"
-                helperText={state.helperText}
-                onChange={handleBioChange}
-                onKeyPress={handleKeyPress}
-              />
-            </div>
-          </CardContent>
-          <CardActions>
-            <Button
-              variant="contained"
-              size="large"
-              color="secondary"
-              className={classes.loginBtn}
-              onClick={handleSignup} // TODO: change to handle signup
-              disabled={state.isButtonDisabled}
-            >
-              Sign up
-            </Button>
-          </CardActions>
-        </Card>
-      </form>
+      <Typography color="#000000" variant="h1" component="div" gutterBottom>
+        Delete your essays from the IPFS Cluster
+      </Typography>
+      <button onClick={handleSignup}>hi</button>
+      {/* <p>{essay}</p> */}
+      {state.username.map((essay) => (
+        <div key={essay.cid}>
+          {essay.title}
+          <button>Remove</button>{' '}
+          <Divider />
+        </div>
+      ))}
     </>
   );
 };
 
-export default Signup;
+export default DeleteFiles;
+
+// {
+//   "essay": [
+//       {
+//           "cid": "aldsfjk",
+//           "title": "murica",
+//           "created_at": "2022-03-10"
+//       },
+//       {
+//           "cid": "QmUaoioqU7bxezBQZkUcgcSyokatMY71sxsALxQmRRrHrj",
+//           "title": "Demo",
+//           "created_at": "2022-03-10"
+//       }
+//   ]
+// }

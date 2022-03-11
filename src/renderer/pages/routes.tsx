@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import MarkdownEditor from './editor';
 import Landing from './landing';
+import DeleteFiles from './delete_files';
 import Paths from './paths';
 import MarkdownReader from './reader';
 import Signup from './signup';
@@ -13,8 +14,7 @@ export default function AppRoutes() {
       <Route path={Paths.READER} element={MarkdownReader()} />
       <Route path={Paths.EDITOR} element={MarkdownEditor()} />
       <Route path={Paths.DASHBOARD} element={Dashboard()} />
-      <Route path={Paths.SIGNUP} element={Signup()} />
-      <Route path={Paths.LANDING} element={Landing()} />
+      <Route path={Paths.LANDING} element={DeleteFiles()} />
       <Route path={Paths.LOGIN} element={Login()} />
     </Routes>
   );
