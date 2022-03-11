@@ -16,7 +16,7 @@ export default function ProfileDropdown() {
     {
       id: 1,
       text: 'Sign Out',
-      onClick: () => {},
+      onClick: () => navigate(Paths.LANDING),
     },
   ];
 

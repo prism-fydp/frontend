@@ -1,6 +1,5 @@
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import Paths from './paths';
 import Trybutton from '../components/try';
 
 const DEFAULT_LABEL = 'IPFS Max Storage Amount (GB)';
@@ -37,7 +36,7 @@ export default function SettingsPage() {
         }}
       >
         <div style={{ position: 'absolute', left: 32, top: 32 }}>
-          <Trybutton routepath={Paths.DASHBOARD} buttonText="Back" />
+          <Trybutton routepath={-1} buttonText="Back" />
         </div>
         <div style={{ width: '100%', marginRight: 16 }}>
           <TextField

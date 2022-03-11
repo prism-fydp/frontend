@@ -31,7 +31,7 @@ export default function MarkdownEditor() {
   };
 
   return (
-    <NavOverlay hideEditorButton>
+    <NavOverlay backButton>
       <MDEditor
         value={fileInfo.data}
         onChange={setData}

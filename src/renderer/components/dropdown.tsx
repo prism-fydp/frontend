@@ -14,6 +14,7 @@ interface Props {
 
 export default function Dropdown({ title, options }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const toggleIsOpen = () => setIsOpen(!isOpen);
 
   return (
     <div className="dropdown-wrapper">
@@ -25,7 +26,7 @@ export default function Dropdown({ title, options }: Props) {
               ? 'dropdown-title'
               : 'dropdown-title-component'
           }
-          onClick={() => setIsOpen(true)}
+          onClick={toggleIsOpen}
         >
           {title}
         </button>

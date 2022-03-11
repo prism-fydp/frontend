@@ -21,7 +21,7 @@ export default function MarkdownReader() {
   }, []);
 
   return (
-    <NavOverlay hideReaderButton hideEditorButton>
+    <NavOverlay backButton>
       <MDEditor
         value={fileInfo.data}
         hideToolbar
