@@ -6,6 +6,7 @@ import Paths, { currentPath, isCurrentPath } from './pages/paths';
 import FileInfo, { isValidFileInfo } from './file_management/file_info';
 import FileManager from './file_management/file_manager';
 import AppRoutes from './pages/routes';
+import { setIPFS } from '../main/ipfs/ipfs';
 
 /*
  * Create a listener for opening a file

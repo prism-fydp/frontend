@@ -6,6 +6,7 @@ import MarkdownReader from './reader';
 import Signup from './signup';
 import Dashboard from './dashboard';
 import Login from './login';
+import Settings from './settings';
 
 export default function AppRoutes() {
   return (
@@ -16,6 +17,7 @@ export default function AppRoutes() {
       <Route path={Paths.SIGNUP} element={Signup()} />
       <Route path={Paths.LANDING} element={Landing()} />
       <Route path={Paths.LOGIN} element={Login()} />
+      <Route path={Paths.SETTINGS} element={Settings()} />
     </Routes>
   );
 }

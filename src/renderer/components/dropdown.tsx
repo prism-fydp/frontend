@@ -15,10 +15,8 @@ interface Props {
 export default function Dropdown({ title, options }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleOpen = () => setIsOpen(!isOpen);
-
   return (
-    <div className="dropdown-wrapper" onBlur={() => setIsOpen(false)}>
+    <div className="dropdown-wrapper">
       <div className="dropdown-header">
         <button
           type="button"
@@ -27,7 +25,7 @@ export default function Dropdown({ title, options }: Props) {
               ? 'dropdown-title'
               : 'dropdown-title-component'
           }
-          onClick={toggleOpen}
+          onClick={() => setIsOpen(true)}
         >
           {title}
         </button>
@@ -36,7 +34,13 @@ export default function Dropdown({ title, options }: Props) {
         <ul className="dropdown-list">
           {options.map(({ id, text, onClick }) => (
             <li className="dropdown-item" key={id.toString()}>
-              <button type="button" onClick={onClick}>
+              <button
+                type="button"
+                onClick={() => {
+                  onClick();
+                  setIsOpen(false);
+                }}
+              >
                 {text}
               </button>
             </li>
