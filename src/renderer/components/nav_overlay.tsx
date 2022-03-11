@@ -5,7 +5,6 @@ import Paths from 'renderer/pages/paths';
 import NavButton from './nav_button';
 import ProfileDropdown from './profile_dropdown';
 import logo from '../../../assets/logo.svg';
-import SearchBar from './search_bar';
 
 interface Props {
   backButton?: boolean;
@@ -19,6 +18,12 @@ function NavOverlay({
   editorButton,
   searchBar,
 }: React.PropsWithChildren<Props>) {
+  const searchButton = (
+    <div style={{ marginRight: 16 }}>
+      <NavButton path={Paths.SEARCH} name="Search" />
+    </div>
+  );
+
   return (
     <div className="nav">
       <div className="nav-bar">
@@ -34,7 +39,7 @@ function NavOverlay({
             zIndex: 1,
           }}
         >
-          {searchBar && <SearchBar setFileSummaries={() => {}} />}
+          {searchBar && searchButton}
           <ProfileDropdown />
         </div>
       </div>
