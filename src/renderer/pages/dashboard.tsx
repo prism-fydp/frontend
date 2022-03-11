@@ -25,26 +25,33 @@ export default function Dashboard() {
   const essays = [ESSAY1, ESSAY2];
 
   return (
-    <NavOverlay editorButton searchBar>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '90vw',
-          justifyContent: 'center',
-          alignItems: 'center',
-          margin: '4vw',
-          color: 'black',
-        }}
-      >
-        {essays.map((essay, i) => {
-          return (
-            <div key={`preview-${i.toString()}`} style={{ marginBottom: 32 }}>
-              <MDEditor.Markdown source={essay} />
-            </div>
-          );
-        })}
-      </div>
-    </NavOverlay>
+    <div
+      style={{ width: '100vw', height: '100vh', backgroundColor: '#F5F5F5' }}
+    >
+      <NavOverlay editorButton searchBar>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '70vw',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 32,
+            marginBottom: 32,
+            marginLeft: '15vw',
+            marginRight: '15vw',
+            color: 'black',
+          }}
+        >
+          {essays.map((essay, i) => {
+            return (
+              <div key={`preview-${i.toString()}`} style={{ marginBottom: 32 }}>
+                <MDEditor.Markdown source={essay} />
+              </div>
+            );
+          })}
+        </div>
+      </NavOverlay>
+    </div>
   );
 }
