@@ -1,4 +1,6 @@
 import React, { useReducer, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
@@ -6,10 +8,12 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
+
 import UserManager from 'renderer/user_manager/user_manager';
-import { useNavigate } from 'react-router-dom';
+import { useSetCurrentUser } from 'renderer/hooks/User';
 import Trybutton from '../components/try';
 import Paths from './paths';
+import { User } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -134,6 +138,7 @@ async function queryDB(username: string, password: string, bio: string) {
 }
 const Signup = () => {
   const nav = useNavigate();
+  const setCurrentUser = useSetCurrentUser();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -162,7 +167,13 @@ const Signup = () => {
       .then((result) => result.json())
       .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
       .then(function (data): any {
-        UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
+        const user: User = {
+          id: data.insert_user_one.id,
+          username: state.username,
+          bio: state.bio,
+        };
+        setCurrentUser(user);
+        // UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
         return data;
       })
       .then(console.log)

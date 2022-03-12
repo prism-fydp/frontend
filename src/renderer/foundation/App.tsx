@@ -3,12 +3,13 @@ import './App.css';
 import { HashRouter } from 'react-router-dom';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Paths, { currentPath, isCurrentPath } from './pages/paths';
-import FileInfo, { isValidFileInfo } from './file_management/file_info';
-import FileManager from './file_management/file_manager';
-import AppRoutes from './pages/routes';
-import publish from './file_management/file_publish';
-import UserManager from './user_manager/user_manager';
+import Paths, { currentPath, isCurrentPath } from '../pages/paths';
+import FileInfo, { isValidFileInfo } from '../file_management/file_info';
+import FileManager from '../file_management/file_manager';
+import AppRoutes from './Router';
+import publish from '../file_management/file_publish';
+import UserManager from '../user_manager/user_manager';
+import { UserStateProvider } from '../hooks/User';
 
 const theme = createTheme({
   typography: {
@@ -112,9 +113,11 @@ window.electron.ipcRenderer.on('ipfs:added', (cid) => {
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
-      <HashRouter>
-        <AppRoutes />
-      </HashRouter>
+      <UserStateProvider>
+        <HashRouter>
+          <AppRoutes />
+        </HashRouter>
+      </UserStateProvider>
     </ThemeProvider>
   );
 }
