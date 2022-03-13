@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { HashRouter, Switch, Route } from 'react-router-dom';
 import MarkdownEditor from '../pages/editor';
 import Landing from '../pages/landing';
 import Paths from '../pages/paths';
@@ -12,16 +12,18 @@ import DeleteFiles from '../pages/delete_files';
 
 export default function AppRoutes() {
   return (
-    <Routes>
-      <Route path={Paths.LANDING} element={Landing()} />
-      <Route path={Paths.SIGNUP} element={Signup()} />
-      <Route path={Paths.LOGIN} element={Login()} />
-      <Route path={Paths.DASHBOARD} element={Dashboard()} />
-      <Route path={Paths.SETTINGS} element={Settings()} />
-      <Route path={Paths.DELETE} element={DeleteFiles([])} />
-      <Route path={Paths.READER} element={MarkdownReader()} />
-      <Route path={Paths.EDITOR} element={MarkdownEditor()} />
-      <Route path={Paths.SEARCH} element={Search()} />
-    </Routes>
+    <HashRouter>
+      <Switch>
+        <Route exact path={Paths.LANDING} component={Landing} />
+        <Route path={Paths.SIGNUP} component={Signup} />
+        <Route path={Paths.LOGIN} component={Login} />
+        <Route path={Paths.DASHBOARD} component={Dashboard} />
+        <Route path={Paths.SETTINGS} component={Settings} />
+        {/* <Route path={Paths.DELETE} component={DeleteFiles([])} /> */}
+        <Route path={Paths.READER} component={MarkdownReader} />
+        <Route path={Paths.EDITOR} component={MarkdownEditor} />
+        <Route path={Paths.SEARCH} component={Search} />
+      </Switch>
+    </HashRouter>
   );
 }

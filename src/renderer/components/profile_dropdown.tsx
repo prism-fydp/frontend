@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '../hooks/Core';
 import Paths from '../pages/paths';
 import Dropdown from './dropdown';
 import profile from '../../../assets/profile/profile.png';

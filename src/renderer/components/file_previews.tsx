@@ -1,6 +1,6 @@
 import { Card, CardHeader } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import Paths from 'renderer/pages/paths';
+import { useNavigate } from '../hooks/Core';
 import FileSummary from './file_summary';
 
 interface Props {
