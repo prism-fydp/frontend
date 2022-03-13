@@ -1,6 +1,6 @@
 import { render } from 'react-dom';
 import { MetaMaskProvider } from 'metamask-react';
-import App from './App';
+import App from './foundation/App';
 
 import './index.css';
 

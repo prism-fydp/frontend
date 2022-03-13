@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { queryById } from 'renderer/utils/query_db';
 import FileSummary from 'renderer/components/file_summary';
 import FilePreviews from 'renderer/components/file_previews';
+import { useCurrentUser } from 'renderer/hooks/User';
 import NavOverlay from '../components/nav_overlay';
 import UserManager from '../user_manager/user_manager';
 
 export default function Dashboard() {
   const [essays, setEssays] = useState<FileSummary[]>([]);
   const [refresh, setRefresh] = useState(false);
+  const currentUser = useCurrentUser();
 
   const [username, bio, id] = UserManager.get();
   if (refresh) {
@@ -51,6 +53,7 @@ export default function Dashboard() {
           >
             Get Essays
           </button>
+          <p>Hello {currentUser.username}</p>
           <FilePreviews fileSummaries={essays} />
         </div>
       </NavOverlay>

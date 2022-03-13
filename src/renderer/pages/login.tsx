@@ -8,8 +8,10 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
-import { useNavigate } from 'react-router-dom';
+
 import UserManager from 'renderer/user_manager/user_manager';
+import { useSetCurrentUser } from 'renderer/hooks/User';
+import { User } from 'renderer/types';
 import Trybutton from '../components/try';
 import Paths from './paths';
 
@@ -131,6 +133,7 @@ async function queryDB(username: string, password: string) {
 
 const Login = () => {
   const nav = useNavigate();
+  const setCurrentUser = useSetCurrentUser();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -161,11 +164,17 @@ const Login = () => {
           });
           console.log('Login failed');
         } else {
-          UserManager.setUser(
-            state.username,
-            data.user[0].bio,
-            data.user[0].id
-          );
+          const user: User = {
+            id: data.user[0].id,
+            username: state.username,
+            bio: data.user[0].bio,
+          };
+          setCurrentUser(user);
+          // UserManager.setUser(
+          //   state.username,
+          //   data.user[0].bio,
+          //   data.user[0].id
+          // );
           console.log('Login success');
           nav(Paths.DASHBOARD);
         }

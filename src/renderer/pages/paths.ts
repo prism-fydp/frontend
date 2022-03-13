@@ -3,15 +3,15 @@
  * directly as strings because typos will not be type-checked at compile-time.
  */
 const enum Paths {
-  READER = '/md-reader',
-  EDITOR = '/md-editor',
   LANDING = '/',
   SIGNUP = '/signup',
-  DASHBOARD = '/dashboard',
   LOGIN = '/login',
+  DASHBOARD = '/dashboard',
   SETTINGS = '/settings',
+  DELETE = '/settings/delete_files',
   SEARCH = '/search',
-  DELETE = '/delete_files',
+  READER = '/md-reader',
+  EDITOR = '/md-editor',
 }
 
 export const currentPath = () => {
