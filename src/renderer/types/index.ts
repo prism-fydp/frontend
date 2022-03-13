@@ -10,11 +10,11 @@ const DefaultUser: User = {
   bio: '',
 };
 
-interface Essay {
-  cid: number;
+interface FileMetadata {
+  cid: string;
   title: string;
   created_at: string;
   user: User;
 }
 
-export { User, DefaultUser, Essay };
+export { User, DefaultUser, FileMetadata };

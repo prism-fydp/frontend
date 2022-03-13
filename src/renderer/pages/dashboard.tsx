@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import FileSummary from 'renderer/components/file_summary';
 import FilePreviews from 'renderer/components/file_previews';
 import useWriterEssays from 'renderer/hooks/essays/useWriterEssays';
+import { FileMetadata } from 'renderer/types';
 import NavOverlay from '../components/nav_overlay';
 
 const Container = styled.div`
@@ -22,19 +22,23 @@ const EssaysContainer = styled.div`
 `;
 
 export default function Dashboard() {
-  const [essays, setEssays] = useState<FileSummary[]>([]);
-  const onComplete = (data) => {
-    if (!essays.length) {
-      setEssays(data);
+  const [fileMetadataList, setFileMetadataList] = useState<FileMetadata[]>([]);
+  const onComplete = (data: Array<FileMetadata>) => {
+    if (!fileMetadataList.length) {
+      setFileMetadataList(data);
     }
   };
   useWriterEssays(onComplete);
 
   return (
     <Container>
-      <NavOverlay editorButton searchBar onSignOut={() => setEssays([])}>
+      <NavOverlay
+        editorButton
+        searchBar
+        onSignOut={() => setFileMetadataList([])}
+      >
         <EssaysContainer>
-          <FilePreviews fileSummaries={essays} />
+          <FilePreviews fileSummaries={fileMetadataList} />
         </EssaysContainer>
       </NavOverlay>
     </Container>

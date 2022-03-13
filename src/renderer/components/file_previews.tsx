@@ -1,10 +1,11 @@
 import { Card, CardHeader } from '@mui/material';
 import Paths from 'renderer/pages/paths';
+import { FileMetadata } from 'renderer/types';
 import { useNavigate } from '../hooks/core';
 import FileSummary from './file_summary';
 
 interface Props {
-  fileSummaries: FileSummary[];
+  fileSummaries: FileMetadata[];
 }
 
 function FilePreviews({ fileSummaries }: Props) {
