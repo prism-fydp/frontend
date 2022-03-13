@@ -1,62 +1,42 @@
 import { useState } from 'react';
-import { queryById } from 'renderer/utils/query_db';
+import styled from 'styled-components';
 import FileSummary from 'renderer/components/file_summary';
 import FilePreviews from 'renderer/components/file_previews';
-import { useCurrentUser } from 'renderer/hooks/user';
+import useWriterEssays from 'renderer/hooks/essays/useWriterEssays';
 import NavOverlay from '../components/nav_overlay';
-import UserManager from '../user_manager/user_manager';
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-color: F5F5F5;
+  overflow-y: scroll;
+`;
+
+const EssaysContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default function Dashboard() {
   const [essays, setEssays] = useState<FileSummary[]>([]);
-  const [refresh, setRefresh] = useState(false);
-  const currentUser = useCurrentUser();
-
-  const [username, bio, id] = UserManager.get();
-  if (refresh) {
-    queryById(id as number)
-      .then((result) => result.json())
-      .then(({ data, errors }) =>
-        errors ? Promise.reject(errors) : data.essay
-      )
-      .then((result) => {
-        setEssays(result);
-        setRefresh(false);
-      })
-      .catch(console.log);
-  }
+  const onComplete = (data) => {
+    if (!essays.length) {
+      setEssays(data);
+    }
+  };
+  useWriterEssays(onComplete);
 
   return (
-    <div
-      style={{
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: '#F5F5F5',
-        overflowY: 'scroll',
-      }}
-    >
+    <Container>
       <NavOverlay editorButton searchBar onSignOut={() => setEssays([])}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'black',
-          }}
-        >
-          <button
-            style={{ width: 150, marginBottom: 32 }}
-            type="button"
-            onClick={() => setRefresh(true)}
-          >
-            Get Essays
-          </button>
-          <p>Hello {currentUser.username}</p>
+        <EssaysContainer>
           <FilePreviews fileSummaries={essays} />
-        </div>
+        </EssaysContainer>
       </NavOverlay>
-    </div>
+    </Container>
   );
 }

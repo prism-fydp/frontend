@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext } from 'react';
 
-import { User } from '../../types';
+import { DefaultUser, User } from '../../types';
 
 type UserState = {
-  userState: Partial<User>;
+  userState: User;
   setUserState: (user: User) => void;
 };
 
@@ -14,7 +14,7 @@ type Props = {
 };
 
 function Provider({ children }: Props) {
-  const [userState, setUserState] = useState({});
+  const [userState, setUserState] = useState(DefaultUser);
 
   const userStateContext: UserState = {
     userState,
@@ -39,7 +39,7 @@ function useSetCurrentUser() {
   };
 }
 
-function useCurrentUser() {
+function useCurrentUser(): User {
   const { userState } = useContext(UserStateContext);
   return userState;
 }
