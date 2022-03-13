@@ -8,11 +8,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
-import UserManager from 'renderer/user_manager/user_manager';
-import { useSetCurrentUser } from 'renderer/hooks/user';
+import { useSetCurrentUser, authenticateUser } from 'renderer/hooks/user';
 import { User } from 'renderer/types';
 import { useNavigate } from '../hooks/core';
-import Trybutton from '../components/try';
+import NavigateButton from '../components/NavigationButton';
 import Paths from './paths';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -37,8 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-// state type
 
 type State = {
   username: string;
@@ -105,34 +102,9 @@ const reducer = (state: State, action: Action): State => {
       };
   }
 };
-async function queryDB(username: string, password: string) {
-  const query = `
-  query MyQuery {
-    user(where: {username: {_eq: "${username}"}, password: {_eq: "${password}"}}) {
-      username
-      id
-      bio
-    }
-  }
-  `;
-
-  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
-    method: 'POST',
-    credentials: 'include',
-    headers: new Headers({
-      'x-hasura-admin-secret':
-        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
-    }),
-    body: JSON.stringify({
-      query,
-      variables: {},
-      operationName: 'MyQuery',
-    }),
-  });
-}
 
 const Login = () => {
-  const nav = useNavigate();
+  const navigate = useNavigate();
   const setCurrentUser = useSetCurrentUser();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -151,64 +123,28 @@ const Login = () => {
     }
   }, [state.username, state.password]);
 
-  const handleLogin = () => {
-    queryDB(state.username, state.password)
-      .then((result) => result.json())
-      .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
-      .then(function (data): any {
-        // eslint-disable-next-line promise/always-return
-        if (data.user.length === 0) {
-          dispatch({
-            type: 'loginFailed',
-            payload: 'Invalid username or password',
-          });
-          console.log('Login failed');
-        } else {
-          const user: User = {
-            id: data.user[0].id,
-            username: state.username,
-            bio: data.user[0].bio,
-          };
-          setCurrentUser(user);
-          // UserManager.setUser(
-          //   state.username,
-          //   data.user[0].bio,
-          //   data.user[0].id
-          // );
-          console.log('Login success');
-          nav(Paths.DASHBOARD);
-        }
-      })
-      .then(console.log)
-      .catch(console.log);
+  const onLoginSuccess = (user: User) => {
+    setCurrentUser(user);
+    console.log('Login success.');
+    navigate(Paths.DASHBOARD);
   };
-
+  const onLoginError = () => console.log('Login failure.');
+  const handleLogin = () =>
+    authenticateUser(
+      state.username,
+      state.password,
+      onLoginSuccess,
+      onLoginError
+    );
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !state.isButtonDisabled) {
       handleLogin();
     }
   };
 
-  const handleUsernameChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setUsername',
-      payload: event.target.value,
-    });
-  };
-
-  const handlePasswordChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setPassword',
-      payload: event.target.value,
-    });
-  };
   return (
     <>
-      <Trybutton routepath={Paths.LANDING} buttonText="Back" />
+      <NavigateButton path={-1} label="Back" />
       <form className={classes.container} noValidate autoComplete="off">
         <Card className={classes.card}>
           <CardHeader className={classes.header} title="Log In" />
@@ -222,7 +158,9 @@ const Login = () => {
                 label="Username"
                 placeholder="Username"
                 margin="normal"
-                onChange={handleUsernameChange}
+                onChange={(e) =>
+                  dispatch({ type: 'setUsername', payload: e.target.value })
+                }
                 onKeyPress={handleKeyPress}
               />
               <TextField
@@ -234,7 +172,9 @@ const Login = () => {
                 placeholder="Password"
                 margin="normal"
                 helperText={state.helperText}
-                onChange={handlePasswordChange}
+                onChange={(e) =>
+                  dispatch({ type: 'setPassword', payload: e.target.value })
+                }
                 onKeyPress={handleKeyPress}
               />
             </div>
@@ -245,7 +185,7 @@ const Login = () => {
               size="large"
               color="secondary"
               className={classes.loginBtn}
-              onClick={handleLogin} // TODO: change to handle Login
+              onClick={handleLogin}
               disabled={state.isButtonDisabled}
             >
               Log In

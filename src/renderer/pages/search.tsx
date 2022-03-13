@@ -12,7 +12,7 @@ import FileSummary from 'renderer/components/file_summary';
 import SearchBar from 'renderer/components/search_bar';
 import styled from 'styled-components';
 import NavigationButton from '../components/NavigationButton';
-import queryOrderedEssays from '../hooks/essays/useOrderedEssays';
+import queryOrderedEssays from '../hooks/essays/queryOrderedEssays';
 
 const Container = styled.div`
   width: 100vw;
