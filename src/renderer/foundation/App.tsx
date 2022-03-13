@@ -1,12 +1,10 @@
 import './App.css';
 
-import { HashRouter } from 'react-router-dom';
-
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Paths, { currentPath, isCurrentPath } from '../pages/paths';
 import FileInfo, { isValidFileInfo } from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
-import AppRoutes from './Router';
+import Router from './Router';
 import publish from '../file_management/file_publish';
 import UserManager from '../user_manager/user_manager';
 import { UserStateProvider } from '../hooks/User';
@@ -114,9 +112,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <UserStateProvider>
-        <HashRouter>
-          <AppRoutes />
-        </HashRouter>
+        <Router />
       </UserStateProvider>
     </ThemeProvider>
   );

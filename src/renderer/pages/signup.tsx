@@ -1,5 +1,4 @@
 import React, { useReducer, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -11,6 +10,7 @@ import Button from '@material-ui/core/Button';
 
 import UserManager from 'renderer/user_manager/user_manager';
 import { useSetCurrentUser } from 'renderer/hooks/User';
+import { useNavigate } from '../hooks/Core';
 import Trybutton from '../components/try';
 import Paths from './paths';
 import { User } from '../types';

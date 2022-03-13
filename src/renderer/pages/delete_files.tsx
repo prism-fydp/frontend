@@ -1,7 +1,6 @@
 import { useReducer, useState } from 'react';
 
 import UserManager from 'renderer/user_manager/user_manager';
-import { useNavigate } from 'react-router-dom';
 
 import {
   Divider,
