@@ -10,8 +10,47 @@ import { useState } from 'react';
 import FilePreviews from 'renderer/components/file_previews';
 import FileSummary from 'renderer/components/file_summary';
 import SearchBar from 'renderer/components/search_bar';
-import TryButton from '../components/try';
+import styled from 'styled-components';
+import NavigationButton from '../components/NavigationButton';
 import queryOrderedEssays from '../hooks/essays/useOrderedEssays';
+
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  overflow-y: scroll;
+`;
+
+const BackButtonContainer = styled.div`
+  position: absolute;
+  top: 32px;
+  left: 32px;
+`;
+
+const ContentContainer = styled.div`
+  width: 500px;
+  margin: 32px;
+`;
+
+const SearchContainer = styled.div`
+  display: flex;
+  height: 50px;
+  align-items: center;
+`;
+
+const SearchBarContainer = styled.div`
+  width: 400px;
+`;
+
+const OrderDropdownContainer = styled.div`
+  width: 150px;
+  margin-right: 20px;
+`;
+
+const SearchResultsContainer = styled.div`
+  margin-top: 32px;
+`;
 
 export default function Search() {
   const [fileSummaries, setFileSummaries] = useState<FileSummary[]>([]);
@@ -26,24 +65,16 @@ export default function Search() {
   };
 
   return (
-    <div
-      style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        overflowY: 'scroll',
-      }}
-    >
-      <div style={{ position: 'absolute', top: 32, left: 16 }}>
-        <TryButton routepath={-1} buttonText="Back" />
-      </div>
-      <div style={{ width: 500, marginTop: 32 }}>
-        <div style={{ display: 'flex' }}>
-          <div style={{ width: 400 }}>
+    <Container>
+      <BackButtonContainer>
+        <NavigationButton path={-1} name="Back" />
+      </BackButtonContainer>
+      <ContentContainer>
+        <SearchContainer>
+          <SearchBarContainer>
             <SearchBar setFileSummaries={setFileSummaries} />
-          </div>
-          <div style={{ width: 100, marginRight: 20 }}>
+          </SearchBarContainer>
+          <OrderDropdownContainer>
             <FormControl fullWidth>
               <InputLabel id="search-all">All By:</InputLabel>
               <Select
@@ -60,12 +91,12 @@ export default function Search() {
                 </MenuItem>
               </Select>
             </FormControl>
-          </div>
-        </div>
-        <div style={{ marginTop: 32 }}>
+          </OrderDropdownContainer>
+        </SearchContainer>
+        <SearchResultsContainer>
           <FilePreviews fileSummaries={fileSummaries} />
-        </div>
-      </div>
-    </div>
+        </SearchResultsContainer>
+      </ContentContainer>
+    </Container>
   );
 }
