@@ -9,9 +9,9 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
 import UserManager from 'renderer/user_manager/user_manager';
-import { useSetCurrentUser } from 'renderer/hooks/User';
+import { useSetCurrentUser } from 'renderer/hooks/user';
 import { User } from 'renderer/types';
-import { useNavigate } from '../hooks/Core';
+import { useNavigate } from '../hooks/core';
 import Trybutton from '../components/try';
 import Paths from './paths';
 

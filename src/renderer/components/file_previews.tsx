@@ -1,6 +1,6 @@
 import { Card, CardHeader } from '@mui/material';
 import Paths from 'renderer/pages/paths';
-import { useNavigate } from '../hooks/Core';
+import { useNavigate } from '../hooks/core';
 import FileSummary from './file_summary';
 
 interface Props {

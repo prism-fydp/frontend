@@ -1,4 +1,4 @@
-import { useNavigate } from '../hooks/Core';
+import { useNavigate } from '../hooks/core';
 
 export interface NavButtonProps {
   path: any;

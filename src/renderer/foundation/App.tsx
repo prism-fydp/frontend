@@ -7,7 +7,7 @@ import FileManager from '../file_management/file_manager';
 import Router from './Router';
 import publish from '../file_management/file_publish';
 import UserManager from '../user_manager/user_manager';
-import { UserStateProvider } from '../hooks/User';
+import { UserStateProvider } from '../hooks/user';
 
 const theme = createTheme({
   typography: {

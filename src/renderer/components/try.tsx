@@ -1,5 +1,5 @@
 import './try.css';
-import { useNavigate } from '../hooks/Core';
+import { useNavigate } from '../hooks/core';
 
 interface TrybuttonProps {
   buttonText: string;

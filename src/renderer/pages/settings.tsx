@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import { useNavigate } from '../hooks/Core';
+import { useNavigate } from '../hooks/core';
 import Trybutton from '../components/try';
 
 const DEFAULT_LABEL = 'IPFS Max Storage Amount (GB)';

@@ -1,4 +1,4 @@
-import { useNavigate } from '../hooks/Core';
+import { useNavigate } from '../hooks/core';
 import Paths from '../pages/paths';
 import Dropdown from './dropdown';
 import profile from '../../../assets/profile/profile.png';
