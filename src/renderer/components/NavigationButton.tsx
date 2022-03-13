@@ -3,7 +3,7 @@ import { useNavigate } from '../hooks/core';
 
 export interface NavButtonProps {
   path: any;
-  name: string;
+  label: string;
 }
 
 const Button = styled.button`
@@ -21,12 +21,12 @@ const Button = styled.button`
   opacity: 0.9;
 `;
 
-export default function NavButton({ path, name }: NavButtonProps) {
+export default function NavButton({ path, label }: NavButtonProps) {
   const navigate = useNavigate();
 
   return (
     <Button type="button" onClick={() => navigate(path)}>
-      {name}
+      {label}
     </Button>
   );
 }

@@ -67,7 +67,7 @@ export default function Search() {
   return (
     <Container>
       <BackButtonContainer>
-        <NavigationButton path={-1} name="Back" />
+        <NavigationButton path={-1} label="Back" />
       </BackButtonContainer>
       <ContentContainer>
         <SearchContainer>
