@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import FilePreviews from 'renderer/components/file_previews';
 import useWriterEssays from 'renderer/hooks/essays/useWriterEssays';

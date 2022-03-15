@@ -1,6 +1,12 @@
 import './App.css';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from '@apollo/client';
 import Paths, { currentPath, isCurrentPath } from '../pages/paths';
 import FileInfo, { isValidFileInfo } from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
@@ -8,6 +14,21 @@ import Router from './Router';
 import publish from '../file_management/file_publish';
 import UserManager from '../user_manager/user_manager';
 import { UserStateProvider } from '../hooks/user';
+
+const BASE_URL = 'https://uncommon-starling-89.hasura.app/v1/graphql';
+const HASURA_ADMIN_SECRET =
+  'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd';
+
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: BASE_URL,
+    credentials: 'include',
+    headers: {
+      'x-hasura-admin-secret': HASURA_ADMIN_SECRET,
+    },
+  }),
+  cache: new InMemoryCache(),
+});
 
 const theme = createTheme({
   typography: {
@@ -110,10 +131,12 @@ window.electron.ipcRenderer.on('ipfs:added', (cid) => {
 
 export default function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <UserStateProvider>
-        <Router />
-      </UserStateProvider>
-    </ThemeProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={theme}>
+        <UserStateProvider>
+          <Router />
+        </UserStateProvider>
+      </ThemeProvider>
+    </ApolloProvider>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useReducer, useEffect } from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -8,12 +9,11 @@ import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
-import UserManager from 'renderer/user_manager/user_manager';
-import { useSetCurrentUser } from 'renderer/hooks/user';
+import { useSetCurrentUser, useCreateUser } from 'renderer/hooks/user';
+import sanitizeUser from 'renderer/utils/sanitize';
 import { useNavigate } from '../hooks/core';
 import Trybutton from '../components/try';
 import Paths from './paths';
-import { User } from '../types';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -110,38 +110,25 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-async function queryDB(username: string, password: string, bio: string) {
-  const query = `
-  mutation NewUser {
-    insert_user_one(object: {bio: "${bio}", password: "${password}", username: "${username}"}) {
-      bio
-      created_at
-      id
-      username
-    }
-  }
-  `;
-
-  return fetch('https://uncommon-starling-89.hasura.app/v1/graphql', {
-    method: 'POST',
-    credentials: 'include',
-    headers: new Headers({
-      'x-hasura-admin-secret':
-        'hw9KXsdU7EJCfG7WBjcR74U2jxs32VabiXPQiNrQqixmgYUEj40eElubgvWofbSd',
-    }),
-    body: JSON.stringify({
-      query,
-      variables: {},
-      operationName: 'NewUser',
-    }),
-  });
-}
-const Signup = () => {
-  const nav = useNavigate();
+function Signup() {
+  const navigate = useNavigate();
   const setCurrentUser = useSetCurrentUser();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const onComplete = (data: any) => {
+    setCurrentUser(sanitizeUser(data.insert_user_one));
+    navigate(Paths.DASHBOARD);
+  };
+  const createUser = useCreateUser(onComplete, console.log)[0];
+  const handleSignup = () => {
+    createUser(state.username, state.password, state.bio);
+  };
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !state.isButtonDisabled) {
+      handleSignup();
+    }
+  };
   useEffect(() => {
     if (
       state.username.trim() &&
@@ -162,65 +149,6 @@ const Signup = () => {
     }
   }, [state.username, state.password, state.confirmpassword]);
 
-  const handleSignup = () => {
-    queryDB(state.username, state.password, state.bio)
-      .then((result) => result.json())
-      .then(({ data, errors }) => (errors ? Promise.reject(errors) : data))
-      .then(function (data): any {
-        const user: User = {
-          id: data.insert_user_one.id,
-          username: state.username,
-          bio: state.bio,
-        };
-        setCurrentUser(user);
-        // UserManager.setUser(state.username, state.bio, data.insert_user_one.id);
-        return data;
-      })
-      .then(console.log)
-      .catch(console.log);
-    // export default res;
-    nav(Paths.DASHBOARD);
-  };
-
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !state.isButtonDisabled) {
-      handleSignup();
-    }
-  };
-
-  const handleUsernameChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setUsername',
-      payload: event.target.value,
-    });
-  };
-
-  const handlePasswordChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setPassword',
-      payload: event.target.value,
-    });
-  };
-  const handleConfirmPasswordChange: React.ChangeEventHandler<
-    HTMLInputElement
-  > = (event) => {
-    dispatch({
-      type: 'setConfirmPassword',
-      payload: event.target.value,
-    });
-  };
-  const handleBioChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    dispatch({
-      type: 'setBio',
-      payload: event.target.value,
-    });
-  };
   return (
     <>
       <Trybutton routepath={Paths.LANDING} buttonText="Back" />
@@ -237,7 +165,9 @@ const Signup = () => {
                 label="Username"
                 placeholder="Username"
                 margin="normal"
-                onChange={handleUsernameChange}
+                onChange={(e) =>
+                  dispatch({ type: 'setUsername', payload: e.target.value })
+                }
                 onKeyPress={handleKeyPress}
               />
               <TextField
@@ -249,7 +179,9 @@ const Signup = () => {
                 placeholder="Password"
                 margin="normal"
                 helperText={state.helperText}
-                onChange={handlePasswordChange}
+                onChange={(e) =>
+                  dispatch({ type: 'setPassword', payload: e.target.value })
+                }
                 onKeyPress={handleKeyPress}
               />
               <TextField
@@ -261,7 +193,12 @@ const Signup = () => {
                 placeholder="Confirm Password"
                 margin="normal"
                 helperText={state.helperText}
-                onChange={handleConfirmPasswordChange}
+                onChange={(e) =>
+                  dispatch({
+                    type: 'setConfirmPassword',
+                    payload: e.target.value,
+                  })
+                }
                 onKeyPress={handleKeyPress}
               />
               <TextField
@@ -273,7 +210,9 @@ const Signup = () => {
                 placeholder="Enter your bio"
                 margin="normal"
                 helperText={state.helperText}
-                onChange={handleBioChange}
+                onChange={(e) =>
+                  dispatch({ type: 'setBio', payload: e.target.value })
+                }
                 onKeyPress={handleKeyPress}
               />
             </div>
@@ -284,7 +223,7 @@ const Signup = () => {
               size="large"
               color="secondary"
               className={classes.loginBtn}
-              onClick={handleSignup} // TODO: change to handle signup
+              onClick={handleSignup}
               disabled={state.isButtonDisabled}
             >
               Sign up
@@ -294,6 +233,6 @@ const Signup = () => {
       </form>
     </>
   );
-};
+}
 
 export default Signup;
