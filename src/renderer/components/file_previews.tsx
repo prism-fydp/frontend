@@ -4,10 +4,10 @@ import { FileMetadata } from 'renderer/types';
 import { useNavigate } from '../hooks/core';
 
 interface Props {
-  fileSummaries: Array<FileMetadata>;
+  fileMetadataList: Array<FileMetadata>;
 }
 
-function FilePreviews({ fileSummaries }: Props) {
+function FilePreviews({ fileMetadataList }: Props) {
   const nav = useNavigate();
 
   const openPreview = (cid: string) => {
@@ -17,15 +17,15 @@ function FilePreviews({ fileSummaries }: Props) {
 
   return (
     <div className="file-preview-wrapper">
-      {fileSummaries.map((fileSummary) => (
+      {fileMetadataList.map((fileMetadata) => (
         <Card
-          onClick={() => openPreview(fileSummary.cid)}
-          key={fileSummary.cid}
+          onClick={() => openPreview(fileMetadata.cid)}
+          key={fileMetadata.cid}
           style={{ width: 500, marginBottom: 32 }}
         >
           <CardHeader
-            title={`${fileSummary.title}`}
-            subheader={`${fileSummary.user.username} - ${fileSummary.created_at}`}
+            title={`${fileMetadata.title}`}
+            subheader={`${fileMetadata.user.username} - ${fileMetadata.created_at}`}
           />
         </Card>
       ))}

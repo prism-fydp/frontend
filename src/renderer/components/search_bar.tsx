@@ -2,12 +2,8 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
-import FileSummary from './file_summary';
-import { querySearch } from '../utils/query_db';
-
-interface Props {
-  setFileSummaries: (f: FileSummary[]) => void;
-}
+import { FileMetadata } from 'renderer/types';
+import useSearchEssays from 'renderer/hooks/essays/useSearchEssays';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -50,25 +46,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function SearchBar({ setFileSummaries }: Props) {
+interface Props {
+  setFileMetadataList: (fileMetadataList: Array<FileMetadata>) => void;
+}
+
+function SearchBar({ setFileMetadataList }: Props) {
   const [text, setText] = useState('');
+  const searchEssays = useSearchEssays(setFileMetadataList);
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      querySearch(text)
-        .then((result) => result.json())
-        .then(({ data, errors }) =>
-          errors ? Promise.reject(errors) : data.essay
-        )
-        .then(setFileSummaries)
-        .catch(console.log);
+      searchEssays(text);
     }
-  };
-
-  const handleTextChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ) => {
-    setText(event.target.value);
   };
 
   return (
@@ -81,7 +70,7 @@ function SearchBar({ setFileSummaries }: Props) {
         placeholder="Search…"
         inputProps={{ 'aria-label': 'search' }}
         onKeyPress={handleKeyPress}
-        onChange={handleTextChange}
+        onChange={(e) => setText(e.target.value)}
       />
     </Search>
   );

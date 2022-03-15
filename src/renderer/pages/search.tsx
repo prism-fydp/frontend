@@ -1,18 +1,12 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useState } from 'react';
 import FilePreviews from 'renderer/components/file_previews';
-import FileSummary from 'renderer/components/file_summary';
 import SearchBar from 'renderer/components/search_bar';
+import { FileMetadata } from 'renderer/types';
 import styled from 'styled-components';
 import NavigationButton from '../components/NavigationButton';
-import queryOrderedEssays from '../hooks/essays/queryOrderedEssays';
+import useOrderedEssays from '../hooks/essays/useOrderedEssays';
 
 const Container = styled.div`
   width: 100vw;
@@ -53,16 +47,9 @@ const SearchResultsContainer = styled.div`
 `;
 
 export default function Search() {
-  const [fileSummaries, setFileSummaries] = useState<FileSummary[]>([]);
-  const [ordering, setOrdering] = useState('');
-
-  const handleSelection = (event: SelectChangeEvent) => {
-    const selection = event.target.value as string;
-    setOrdering(selection);
-    if (selection !== '') {
-      queryOrderedEssays(ordering, setFileSummaries);
-    }
-  };
+  const [fileMetadataList, setFileMetadataList] = useState<FileMetadata[]>([]);
+  const [order, setOrder] = useState('');
+  useOrderedEssays(order, setFileMetadataList, order === '');
 
   return (
     <Container>
@@ -72,21 +59,21 @@ export default function Search() {
       <ContentContainer>
         <SearchContainer>
           <SearchBarContainer>
-            <SearchBar setFileSummaries={setFileSummaries} />
+            <SearchBar setFileMetadataList={setFileMetadataList} />
           </SearchBarContainer>
           <OrderDropdownContainer>
             <FormControl fullWidth>
               <InputLabel id="search-all">All By:</InputLabel>
               <Select
                 labelId="search-all-select"
-                value={ordering}
+                value={order}
                 autoWidth
-                onChange={handleSelection}
+                onChange={(e) => setOrder(e.target.value)}
               >
-                <MenuItem value="created_at: asc">
+                <MenuItem value="asc">
                   Date <ArrowUpward />
                 </MenuItem>
-                <MenuItem value="created_at: desc">
+                <MenuItem value="desc">
                   Date <ArrowDownward />
                 </MenuItem>
               </Select>
@@ -94,7 +81,7 @@ export default function Search() {
           </OrderDropdownContainer>
         </SearchContainer>
         <SearchResultsContainer>
-          <FilePreviews fileSummaries={fileSummaries} />
+          <FilePreviews fileMetadataList={fileMetadataList} />
         </SearchResultsContainer>
       </ContentContainer>
     </Container>
