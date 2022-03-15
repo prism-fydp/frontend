@@ -2,13 +2,13 @@ import UserStateProvider, {
   useSetCurrentUser,
   useCurrentUser,
 } from './UserState';
-import authenticateUser from './authenticateUser';
+import useAuthenticateUser from './useAuthenticateUser';
 import useCreateUser from './useCreateUser';
 
 export {
   UserStateProvider,
   useSetCurrentUser,
   useCurrentUser,
-  authenticateUser,
+  useAuthenticateUser,
   useCreateUser,
 };

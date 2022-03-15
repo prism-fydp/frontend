@@ -9,22 +9,23 @@ interface FileMetadataResult {
   fileMetadata: Array<FileMetadata>;
 }
 
+const GET_USER_ESSAYS = gql`
+  query get_user_essays($userId: Int!) {
+    essay(where: { user: { id: { _eq: $userId } } }) {
+      cid
+      title
+      created_at
+      user {
+        username
+      }
+    }
+  }
+`;
+
 export default function useFileMetadataByUserId(
   userId: number,
   skip: boolean
 ): FileMetadataResult {
-  const GET_USER_ESSAYS = gql`
-    query get_user_essays($userId: Int!) {
-      essay(where: { user: { id: { _eq: $userId } } }) {
-        cid
-        title
-        created_at
-        user {
-          username
-        }
-      }
-    }
-  `;
   const { loading, error, data } = useQuery(GET_USER_ESSAYS, {
     skip,
     variables: { userId },

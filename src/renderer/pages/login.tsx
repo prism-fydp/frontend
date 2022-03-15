@@ -8,7 +8,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
-import { useSetCurrentUser, authenticateUser } from 'renderer/hooks/user';
+import { useSetCurrentUser, useAuthenticateUser } from 'renderer/hooks/user';
 import { User } from 'renderer/types';
 import { useNavigate } from '../hooks/core';
 import NavigateButton from '../components/NavigationButton';
@@ -108,6 +108,20 @@ const Login = () => {
   const setCurrentUser = useSetCurrentUser();
   const classes = useStyles();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const onLoginSuccess = (user: User) => {
+    console.log('Login success.');
+    console.log(user);
+    setCurrentUser(user);
+    navigate(Paths.DASHBOARD);
+  };
+  const onLoginError = () => console.log('Login failure.');
+  const authenticateUser = useAuthenticateUser(onLoginSuccess, onLoginError);
+  const handleLogin = () => authenticateUser(state.username, state.password);
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && !state.isButtonDisabled) {
+      handleLogin();
+    }
+  };
 
   useEffect(() => {
     if (state.username.trim() && state.password.trim()) {
@@ -122,25 +136,6 @@ const Login = () => {
       });
     }
   }, [state.username, state.password]);
-
-  const onLoginSuccess = (user: User) => {
-    setCurrentUser(user);
-    console.log('Login success.');
-    navigate(Paths.DASHBOARD);
-  };
-  const onLoginError = () => console.log('Login failure.');
-  const handleLogin = () =>
-    authenticateUser(
-      state.username,
-      state.password,
-      onLoginSuccess,
-      onLoginError
-    );
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !state.isButtonDisabled) {
-      handleLogin();
-    }
-  };
 
   return (
     <>
