@@ -12,7 +12,7 @@ import FileInfo, { isValidFileInfo } from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Router from './Router';
 import publish from '../file_management/file_publish';
-import UserManager from '../user_manager/user_manager';
+import { getCurrentUser } from 'renderer/hooks/user';
 import { UserStateProvider } from '../hooks/user';
 
 const BASE_URL = 'https://uncommon-starling-89.hasura.app/v1/graphql';
@@ -82,7 +82,7 @@ window.electron.ipcRenderer.on('ipfs:add', () => {
 });
 
 async function addEssay(cid: string, fileInfo: FileInfo) {
-  const authorID = UserManager.get()[2];
+  const authorID = getCurrentUser().id;
 
   const perIdx = fileInfo.filePath.lastIndexOf('.');
   const sepIdx = fileInfo.filePath.lastIndexOf('/') + 1;

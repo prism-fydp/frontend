@@ -5,10 +5,10 @@ import { DefaultUser, FileMetadata } from '../../types';
 interface FileMetadataResult {
   loading: boolean;
   error: any;
-  fileMetadata: Array<FileMetadata>;
+  fileMetadataList: Array<FileMetadata>;
 }
 
-export default function useWriterFileMetadata(): FileMetadataResult {
+export default function useWriterFileMetadataList(): FileMetadataResult {
   const currentUser = useCurrentUser();
   const shouldSkip = currentUser.id === DefaultUser.id;
   return useFileMetadataByUserId(currentUser.id, shouldSkip);

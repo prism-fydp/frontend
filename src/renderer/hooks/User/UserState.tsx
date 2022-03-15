@@ -8,6 +8,7 @@ type UserState = {
 };
 
 const UserStateContext = createContext({} as UserState);
+let currentUser: User = DefaultUser;
 
 type Props = {
   children?: React.ReactNode;
@@ -36,6 +37,7 @@ function useSetCurrentUser() {
   const { setUserState } = useContext(UserStateContext);
   return (user: User) => {
     setUserState(user);
+    currentUser = user;
   };
 }
 
@@ -44,6 +46,10 @@ function useCurrentUser(): User {
   return userState;
 }
 
-export { useSetCurrentUser, useCurrentUser };
+function getCurrentUser(): User {
+  return currentUser;
+}
+
+export { useSetCurrentUser, useCurrentUser, getCurrentUser };
 
 export default Provider;

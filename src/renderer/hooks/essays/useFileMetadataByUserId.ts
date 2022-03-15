@@ -6,7 +6,7 @@ import { sanitizeFileMetadata } from 'renderer/utils/sanitize';
 interface FileMetadataResult {
   loading: boolean;
   error: any;
-  fileMetadata: Array<FileMetadata>;
+  fileMetadataList: Array<FileMetadata>;
 }
 
 const GET_USER_ESSAYS = gql`
@@ -34,6 +34,6 @@ export default function useFileMetadataByUserId(
   return {
     loading,
     error,
-    fileMetadata: data ? data.essay.map(sanitizeFileMetadata) : [],
+    fileMetadataList: data ? data.essay.map(sanitizeFileMetadata) : [],
   };
 }

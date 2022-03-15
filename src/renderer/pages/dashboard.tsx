@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import FilePreviews from 'renderer/components/file_previews';
-import useWriterFileMetadata from 'renderer/hooks/essays/useWriterFileMetadata';
+import useWriterFileMetadataList from 'renderer/hooks/essays/useWriterFileMetadataList';
 import NavOverlay from '../components/nav_overlay';
 
 const Container = styled.div`
@@ -20,13 +20,13 @@ const EssaysContainer = styled.div`
 `;
 
 export default function Dashboard() {
-  const { loading, fileMetadata } = useWriterFileMetadata();
+  const { loading, fileMetadataList } = useWriterFileMetadataList();
 
   let statusText = null;
 
   if (loading) {
     statusText = <p>Loading files...</p>;
-  } else if (!fileMetadata.length) {
+  } else if (!fileMetadataList.length) {
     statusText = <p>No results</p>;
   }
 
@@ -35,7 +35,7 @@ export default function Dashboard() {
       <NavOverlay editorButton searchBar>
         <EssaysContainer>
           {statusText}
-          <FilePreviews fileSummaries={fileMetadata} />
+          <FilePreviews fileMetadataList={fileMetadataList} />
         </EssaysContainer>
       </NavOverlay>
     </Container>
