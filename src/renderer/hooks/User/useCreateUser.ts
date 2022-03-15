@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable promise/always-return */
 import { DefaultUser, User } from 'renderer/types';
 import { gql, useMutation } from '@apollo/client';
 import sanitizeUser from 'renderer/utils/sanitize';
 
 export default function useCreateUser(
-  onCompleted: (user: User) => void,
-  onError: () => void
+  onCompleted: (user: User) => void
 ): Array<any> {
   const CREATE_USER = gql`
     mutation insert_single_user($object: user_insert_input!) {
@@ -33,7 +33,7 @@ export default function useCreateUser(
         },
       },
       onCompleted,
-      onError,
+      onError: console.log,
     });
   };
 

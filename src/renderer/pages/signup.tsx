@@ -10,7 +10,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
 import { useSetCurrentUser, useCreateUser } from 'renderer/hooks/user';
-import sanitizeUser from 'renderer/utils/sanitize';
+import { sanitizeUser } from 'renderer/utils/sanitize';
 import { useNavigate } from '../hooks/core';
 import Trybutton from '../components/try';
 import Paths from './paths';
@@ -120,7 +120,7 @@ function Signup() {
     setCurrentUser(sanitizeUser(data.insert_user_one));
     navigate(Paths.DASHBOARD);
   };
-  const createUser = useCreateUser(onComplete, console.log)[0];
+  const createUser = useCreateUser(onComplete)[0];
   const handleSignup = () => {
     createUser(state.username, state.password, state.bio);
   };

@@ -17,4 +17,11 @@ interface FileMetadata {
   user: User;
 }
 
-export { User, DefaultUser, FileMetadata };
+const DefaultFileMetadata = {
+  cid: '',
+  title: '',
+  created_at: '',
+  user: DefaultUser,
+};
+
+export { User, DefaultUser, FileMetadata, DefaultFileMetadata };
