@@ -33,7 +33,6 @@ export default function MarkdownReader() {
       }}
     >
       <NavOverlay backButton>
-        <PaymentButton address={currentWriter.publicAddress} />
         <div
           style={{
             display: 'flex',
@@ -45,6 +44,7 @@ export default function MarkdownReader() {
             <MDEditor.Markdown source={fileInfo.data} />
           </div>
         </div>
+        <PaymentButton address={currentWriter.publicAddress} />
       </NavOverlay>
     </div>
   );

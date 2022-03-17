@@ -13,8 +13,13 @@ export default function PaymentButton({ address }: PaymentButtonProps) {
   };
 
   return (
-    <button type="button" className="payment-button" onClick={openPaymentPage}>
-      Pay!
+    <button
+      style={{ width: 200, alignSelf: 'center', marginTop: 16 }}
+      type="button"
+      className="payment-button"
+      onClick={openPaymentPage}
+    >
+      Donate to the author!
     </button>
   );
 }
