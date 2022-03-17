@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import { FileMetadata } from 'renderer/types';
+import { FileMetadata } from '../../types';
 
 const DELETE_ESSAY = gql`
   mutation delete_essay($cid: String!) {

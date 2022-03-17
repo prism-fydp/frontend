@@ -9,8 +9,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
-import { useSetCurrentUser, useCreateUser } from 'renderer/hooks/user';
-import { sanitizeUser } from 'renderer/utils/sanitize';
+import { useSetCurrentUser, useCreateUser } from '../hooks/user';
+import { sanitizeUser } from '../utils/sanitize';
 import { useNavigate } from '../hooks/core';
 import NavigationButton from '../components/NavigationButton';
 import Paths from './paths';
@@ -45,6 +45,7 @@ type State = {
   password: string;
   confirmpassword: string;
   bio: string;
+  publicAddress: string;
   isButtonDisabled: boolean;
   helperText: string;
   isError: boolean;
@@ -54,6 +55,7 @@ const initialState: State = {
   username: '',
   password: '',
   bio: '',
+  publicAddress: '',
   confirmpassword: '',
   isButtonDisabled: true,
   helperText: '',
@@ -65,6 +67,7 @@ type Action =
   | { type: 'setPassword'; payload: string }
   | { type: 'setConfirmPassword'; payload: string }
   | { type: 'setBio'; payload: string }
+  | { type: 'setPublicAddress'; payload: string }
   | { type: 'setIsButtonDisabled'; payload: boolean }
   | { type: 'loginSuccess'; payload: string }
   | { type: 'loginFailed'; payload: string }
@@ -91,6 +94,11 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         bio: action.payload,
+      };
+    case 'setPublicAddress':
+      return {
+        ...state,
+        publicAddress: action.payload,
       };
     case 'setIsButtonDisabled':
       return {
@@ -122,7 +130,7 @@ function Signup() {
   };
   const createUser = useCreateUser(onComplete)[0];
   const handleSignup = () => {
-    createUser(state.username, state.password, state.bio);
+    createUser(state.username, state.password, state.bio, state.publicAddress);
   };
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && !state.isButtonDisabled) {
@@ -196,6 +204,23 @@ function Signup() {
                 onChange={(e) =>
                   dispatch({
                     type: 'setConfirmPassword',
+                    payload: e.target.value,
+                  })
+                }
+                onKeyPress={handleKeyPress}
+              />
+              <TextField
+                error={state.isError}
+                fullWidth
+                id="publicAddress"
+                type="text"
+                label="Public Address"
+                placeholder="Enter your public address"
+                margin="normal"
+                helperText={state.helperText}
+                onChange={(e) =>
+                  dispatch({
+                    type: 'setPublicAddress',
                     payload: e.target.value,
                   })
                 }

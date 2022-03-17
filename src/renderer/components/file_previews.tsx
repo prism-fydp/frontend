@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import useDeleteEssay from 'renderer/hooks/essays/useDeleteEssay';
-import { useSetCurrentWriter } from 'renderer/hooks/user';
-import Paths from 'renderer/pages/paths';
-import { FileMetadata } from 'renderer/types';
 import styled from 'styled-components';
+import Paths from '../pages/paths';
+import { FileMetadata } from '../types';
+import { useSetCurrentWriter } from '../hooks/user';
+import useDeleteEssay from '../hooks/essays/useDeleteEssay';
 import { useNavigate } from '../hooks/core';
 import DropdownMenu from './DropdownMenu';
+
+import defaultProfile from '../../../assets/default_avatar.png';
 
 const Container = styled.div`
   width: 500px;
@@ -55,9 +57,14 @@ const Divider = styled.div`
 interface Props {
   fileMetadataList: Array<FileMetadata>;
   setFileMetadataList: (fileMetadataList: Array<FileMetadata>) => void;
+  showDelete?: boolean;
 }
 
-function FilePreviews({ fileMetadataList, setFileMetadataList }: Props) {
+function FilePreviews({
+  fileMetadataList,
+  setFileMetadataList,
+  showDelete,
+}: Props) {
   const navigate = useNavigate();
   const deleteEssay = useDeleteEssay();
   const setCurrentWriter = useSetCurrentWriter();
@@ -86,14 +93,19 @@ function FilePreviews({ fileMetadataList, setFileMetadataList }: Props) {
           <Container key={`fileMetadata-${fileMetadata.cid}`}>
             <ContentContainer onClick={() => openPreview(fileMetadata)}>
               <AuthorDetailsContainer>
-                <ProfileAvatar />
+                <img
+                  style={{ marginRight: 8 }}
+                  width="24px"
+                  alt="default_profile"
+                  src={defaultProfile}
+                />
                 <p>{fileMetadata.user.username}</p>
                 <Separator />
                 <p>{fileMetadata.created_at}</p>
               </AuthorDetailsContainer>
               <Title>{fileMetadata.title}</Title>
             </ContentContainer>
-            <DropdownMenu options={options} />
+            {showDelete && <DropdownMenu options={options} />}
             {i < fileMetadataList.length - 1 && <Divider />}
           </Container>
         );
@@ -101,5 +113,9 @@ function FilePreviews({ fileMetadataList, setFileMetadataList }: Props) {
     </div>
   );
 }
+
+FilePreviews.defaultProps = {
+  showDelete: false,
+};
 
 export default FilePreviews;

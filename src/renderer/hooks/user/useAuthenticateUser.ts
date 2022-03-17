@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from '@apollo/client';
-import { User } from 'renderer/types';
-import { sanitizeUser } from 'renderer/utils/sanitize';
+import { User } from '../../types';
+import { sanitizeUser } from '../../utils/sanitize';
 
 const AUTHENTICATE_USER = gql`
   query authenticate_user($username: String!, $password: String!) {

@@ -1,7 +1,7 @@
 import './nav_overlay.css';
 
 import React from 'react';
-import Paths from 'renderer/pages/paths';
+import Paths from '../pages/paths';
 import NavButton from './nav_button';
 import ProfileDropdown from './profile_dropdown';
 import logo from '../../../assets/logo.svg';

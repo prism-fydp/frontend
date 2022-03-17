@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
-import { getCurrentUser } from 'renderer/hooks/user';
-import Paths from 'renderer/pages/paths';
-import { DefaultUser } from 'renderer/types';
+import Paths from '../pages/paths';
+import { DefaultUser } from '../types';
+import { getCurrentUser } from '../hooks/user';
 import FileManager from './file_manager';
 
 export default async function publish() {

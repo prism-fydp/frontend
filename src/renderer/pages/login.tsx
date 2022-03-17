@@ -8,8 +8,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
-import { useSetCurrentUser, useAuthenticateUser } from 'renderer/hooks/user';
-import { User } from 'renderer/types';
+import { useSetCurrentUser, useAuthenticateUser } from '../hooks/user';
+import { User } from '../types';
 import { useNavigate } from '../hooks/core';
 import NavigateButton from '../components/NavigationButton';
 import Paths from './paths';

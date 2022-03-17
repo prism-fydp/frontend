@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { FileMetadata } from 'renderer/types';
+import { FileMetadata } from '../../types';
 import { sanitizeFileMetadata } from '../../utils/sanitize';
 
 const GET_ORDERED_ESSAYS = gql`
@@ -9,7 +9,10 @@ const GET_ORDERED_ESSAYS = gql`
       title
       created_at
       user {
+        id
         username
+        bio
+        public_address
       }
     }
   }

@@ -41,6 +41,7 @@ Provider.defaultProps = {
 function useSetCurrentUser() {
   const { setUserState } = useContext(UserStateContext);
   return (user: User) => {
+    console.log('currentUser', user);
     setUserState(user);
     currentUser = user;
   };

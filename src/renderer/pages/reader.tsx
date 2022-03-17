@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import PaymentButton from 'renderer/components/PaymentButton';
-import { useCurrentWriter } from 'renderer/hooks/user';
+import PaymentButton from '../components/PaymentButton';
+import { useCurrentWriter } from '../hooks/user';
 import FileInfo from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Paths from './paths';

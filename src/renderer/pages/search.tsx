@@ -1,10 +1,10 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useState } from 'react';
-import FilePreviews from 'renderer/components/file_previews';
-import SearchBar from 'renderer/components/search_bar';
-import { FileMetadata } from 'renderer/types';
 import styled from 'styled-components';
+import { FileMetadata } from '../types';
+import SearchBar from '../components/search_bar';
+import FilePreviews from '../components/file_previews';
 import NavigationButton from '../components/NavigationButton';
 import useOrderedEssays from '../hooks/essays/useOrderedEssays';
 
@@ -12,6 +12,8 @@ const Container = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
+  background-color: #f5f5f5;
+  color: black;
   justify-content: center;
   overflow-y: scroll;
 `;
@@ -48,7 +50,7 @@ const SearchResultsContainer = styled.div`
 
 export default function Search() {
   const [fileMetadataList, setFileMetadataList] = useState<FileMetadata[]>([]);
-  const [order, setOrder] = useState('');
+  const [order, setOrder] = useState('asc');
   useOrderedEssays(order, setFileMetadataList, order === '');
 
   return (
@@ -81,7 +83,10 @@ export default function Search() {
           </OrderDropdownContainer>
         </SearchContainer>
         <SearchResultsContainer>
-          <FilePreviews fileMetadataList={fileMetadataList} />
+          <FilePreviews
+            fileMetadataList={fileMetadataList}
+            setFileMetadataList={setFileMetadataList}
+          />
         </SearchResultsContainer>
       </ContentContainer>
     </Container>

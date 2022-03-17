@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from '@apollo/client';
-import { FileMetadata } from 'renderer/types';
-import { sanitizeFileMetadata } from 'renderer/utils/sanitize';
+import { FileMetadata } from '../../types';
+import { sanitizeFileMetadata } from '../../utils/sanitize';
 
 const SEARCH_ESSAYS = gql`
   query search_essays($text: String!) {
@@ -19,6 +19,7 @@ const SEARCH_ESSAYS = gql`
         id
         username
         bio
+        public_address
       }
     }
   }

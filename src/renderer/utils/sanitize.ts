@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { User, FileMetadata } from 'renderer/types';
+import { User, FileMetadata } from '../types';
 
 function sanitizeUser(data: any): User {
   return {

@@ -139,12 +139,12 @@ export default class MenuBuilder {
       label: 'IPFS',
       submenu: [
         { label: 'Ping', click: () => this.pingIPFS() },
-        { label: 'Add', click: () => this.addIPFS() },
-        { label: 'Get', click: () => this.getIPFS() },
-        {
-          label: 'Set',
-          click: () => setIPFS('IPFS:DataStore:StorageMax', '10GB'),
-        },
+        // { label: 'Add', click: () => this.addIPFS() },
+        // { label: 'Get', click: () => this.getIPFS() },
+        // {
+        //   label: 'Set',
+        //   click: () => setIPFS('IPFS:DataStore:StorageMax', '10GB'),
+        // },
       ],
     };
 

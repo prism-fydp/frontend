@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import FilePreviews from 'renderer/components/file_previews';
-import useWriterFileMetadataList from 'renderer/hooks/essays/useWriterFileMetadataList';
-import { FileMetadata } from 'renderer/types';
 import { useState } from 'react';
+import useWriterFileMetadataList from '../hooks/essays/useWriterFileMetadataList';
+import { FileMetadata } from '../types';
+import FilePreviews from '../components/file_previews';
 import NavOverlay from '../components/nav_overlay';
 
 const Container = styled.div`
@@ -56,6 +56,7 @@ export default function Dashboard() {
           <FilePreviews
             fileMetadataList={fileMetadataList}
             setFileMetadataList={setFileMetadataList}
+            showDelete
           />
         </EssaysContainer>
       </NavOverlay>

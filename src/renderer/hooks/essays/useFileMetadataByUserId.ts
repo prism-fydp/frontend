@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { gql, useQuery } from '@apollo/client';
-import { FileMetadata } from 'renderer/types';
-import { sanitizeFileMetadata } from 'renderer/utils/sanitize';
+import { FileMetadata } from '../../types';
+import { sanitizeFileMetadata } from '../../utils/sanitize';
 
 interface FileMetadataResult {
   loading: boolean;
@@ -37,6 +37,7 @@ export default function useFileMetadataByUserId(
     skip,
     variables: { userId },
     onCompleted: complete,
+    fetchPolicy: 'network-only',
   });
 
   return {

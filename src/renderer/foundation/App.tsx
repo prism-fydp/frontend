@@ -7,7 +7,7 @@ import {
   ApolloProvider,
   HttpLink,
 } from '@apollo/client';
-import { getCurrentUser, UserStateProvider } from 'renderer/hooks/user';
+import { getCurrentUser, UserStateProvider } from '../hooks/user';
 import Paths, { currentPath, isCurrentPath } from '../pages/paths';
 import FileInfo, { isValidFileInfo } from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
