@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
+import PaymentButton from 'renderer/components/PaymentButton';
+import { useCurrentWriter } from 'renderer/hooks/user';
 import FileInfo from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Paths from './paths';
@@ -9,6 +11,7 @@ import NavOverlay from '../components/nav_overlay';
  * A markdown editor. Markdown text to render is provided in the props.
  */
 export default function MarkdownReader() {
+  const currentWriter = useCurrentWriter();
   const [fileInfo, setFileInfo] = useState<FileInfo>({
     data: '',
     filePath: '',
@@ -30,6 +33,7 @@ export default function MarkdownReader() {
       }}
     >
       <NavOverlay backButton>
+        <PaymentButton address={currentWriter.publicAddress} />
         <div
           style={{
             display: 'flex',

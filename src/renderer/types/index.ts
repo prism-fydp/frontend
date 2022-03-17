@@ -2,12 +2,14 @@ interface User {
   id: number;
   username: string;
   bio: string;
+  publicAddress: string;
 }
 
 const DefaultUser: User = {
   id: 0,
   username: '',
   bio: '',
+  publicAddress: '',
 };
 
 interface FileMetadata {

@@ -7,13 +7,12 @@ import {
   ApolloProvider,
   HttpLink,
 } from '@apollo/client';
+import { getCurrentUser, UserStateProvider } from 'renderer/hooks/user';
 import Paths, { currentPath, isCurrentPath } from '../pages/paths';
 import FileInfo, { isValidFileInfo } from '../file_management/file_info';
 import FileManager from '../file_management/file_manager';
 import Router from './Router';
 import publish from '../file_management/file_publish';
-import { getCurrentUser } from 'renderer/hooks/user';
-import { UserStateProvider } from '../hooks/user';
 
 const BASE_URL = 'https://uncommon-starling-89.hasura.app/v1/graphql';
 const HASURA_ADMIN_SECRET =

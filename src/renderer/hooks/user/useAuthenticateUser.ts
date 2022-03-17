@@ -10,6 +10,7 @@ const AUTHENTICATE_USER = gql`
       username
       id
       bio
+      public_address
     }
   }
 `;

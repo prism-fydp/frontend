@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import useDeleteEssay from 'renderer/hooks/essays/useDeleteEssay';
+import { useSetCurrentWriter } from 'renderer/hooks/user';
 import Paths from 'renderer/pages/paths';
 import { FileMetadata } from 'renderer/types';
 import styled from 'styled-components';
@@ -59,8 +60,10 @@ interface Props {
 function FilePreviews({ fileMetadataList, setFileMetadataList }: Props) {
   const navigate = useNavigate();
   const deleteEssay = useDeleteEssay();
-  const openPreview = (cid: string) => {
-    window.electron.ipcRenderer.send('ipfs:get', cid);
+  const setCurrentWriter = useSetCurrentWriter();
+  const openPreview = (fileMetadata: FileMetadata) => {
+    window.electron.ipcRenderer.send('ipfs:get', fileMetadata.cid);
+    setCurrentWriter(fileMetadata.user);
     navigate(Paths.READER);
   };
 
@@ -81,7 +84,7 @@ function FilePreviews({ fileMetadataList, setFileMetadataList }: Props) {
 
         return (
           <Container key={`fileMetadata-${fileMetadata.cid}`}>
-            <ContentContainer onClick={() => openPreview(fileMetadata.cid)}>
+            <ContentContainer onClick={() => openPreview(fileMetadata)}>
               <AuthorDetailsContainer>
                 <ProfileAvatar />
                 <p>{fileMetadata.user.username}</p>

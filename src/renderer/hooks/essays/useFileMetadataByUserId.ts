@@ -16,7 +16,10 @@ const GET_USER_ESSAYS = gql`
       title
       created_at
       user {
+        id
         username
+        bio
+        public_address
       }
     }
   }

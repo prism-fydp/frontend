@@ -47,7 +47,7 @@ function NavOverlay({
         </div>
       </div>
       {children}
-      <div style={{ position: 'absolute', right: 8, bottom: 16 }}>
+      <div style={{ position: 'absolute', right: 16, bottom: 16 }}>
         {editorButton && <NavButton path={Paths.EDITOR} name="Editor" />}
       </div>
     </div>

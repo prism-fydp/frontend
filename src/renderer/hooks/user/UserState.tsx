@@ -5,6 +5,8 @@ import { DefaultUser, User } from '../../types';
 type UserState = {
   userState: User;
   setUserState: (user: User) => void;
+  writerState: User;
+  setWriterState: (user: User) => void;
 };
 
 const UserStateContext = createContext({} as UserState);
@@ -16,10 +18,13 @@ type Props = {
 
 function Provider({ children }: Props) {
   const [userState, setUserState] = useState(DefaultUser);
+  const [writerState, setWriterState] = useState(DefaultUser);
 
   const userStateContext: UserState = {
     userState,
     setUserState,
+    writerState,
+    setWriterState,
   };
 
   return (
@@ -50,6 +55,22 @@ function getCurrentUser(): User {
   return currentUser;
 }
 
-export { useSetCurrentUser, useCurrentUser, getCurrentUser };
+function useCurrentWriter(): User {
+  const { writerState } = useContext(UserStateContext);
+  return writerState;
+}
+
+function useSetCurrentWriter() {
+  const { setWriterState } = useContext(UserStateContext);
+  return setWriterState;
+}
+
+export {
+  useSetCurrentUser,
+  useCurrentUser,
+  getCurrentUser,
+  useCurrentWriter,
+  useSetCurrentWriter,
+};
 
 export default Provider;

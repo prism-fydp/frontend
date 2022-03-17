@@ -6,6 +6,7 @@ function sanitizeUser(data: any): User {
     id: data.id,
     username: data.username,
     bio: data.bio,
+    publicAddress: data.public_address,
   };
 }
 
