@@ -83,15 +83,16 @@ window.electron.ipcRenderer.on('ipfs:add', () => {
 async function addEssay(cid: string, fileInfo: FileInfo) {
   const authorID = getCurrentUser().id;
 
-  const perIdx = fileInfo.filePath.lastIndexOf('.');
-  const sepIdx = fileInfo.filePath.lastIndexOf('/') + 1;
+  const tokens = fileInfo.filePath.split('/');
+  const nameWithExt = tokens[tokens.length - 1];
+  const nameWithoutExt = nameWithExt.split('.')[0];
 
   const query = `
     mutation addEssay {
       insert_essay(objects: {
         author: ${authorID},
         cid: "${cid}",
-        title: "${fileInfo.filePath.substring(sepIdx, perIdx)}",
+        title: "${nameWithoutExt}",
       }) {
         affected_rows
       }
