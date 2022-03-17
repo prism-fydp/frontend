@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 import FilePreviews from 'renderer/components/file_previews';
 import useWriterFileMetadataList from 'renderer/hooks/essays/useWriterFileMetadataList';
+import { FileMetadata } from 'renderer/types';
+import { useState } from 'react';
 import NavOverlay from '../components/nav_overlay';
 
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: F5F5F5;
+  background-color: #f5f5f5;
   overflow-y: scroll;
 `;
 
@@ -17,10 +19,23 @@ const EssaysContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: black;
+`;
+
+const Title = styled.p`
+  font-size: 48px;
+  font-weight: 600;
+  color: black;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  margin-left: 32px;
 `;
 
 export default function Dashboard() {
-  const { loading, fileMetadataList } = useWriterFileMetadataList();
+  const [fileMetadataList, setFileMetadataList] = useState<Array<FileMetadata>>(
+    []
+  );
+  const { loading } = useWriterFileMetadataList(setFileMetadataList);
 
   let statusText = null;
 
@@ -34,8 +49,14 @@ export default function Dashboard() {
     <Container>
       <NavOverlay editorButton searchBar>
         <EssaysContainer>
+          <div style={{ width: 500 }}>
+            <Title>Essays</Title>
+          </div>
           {statusText}
-          <FilePreviews fileMetadataList={fileMetadataList} />
+          <FilePreviews
+            fileMetadataList={fileMetadataList}
+            setFileMetadataList={setFileMetadataList}
+          />
         </EssaysContainer>
       </NavOverlay>
     </Container>

@@ -107,23 +107,6 @@ export default function SettingsPage() {
             margin: 16,
           }}
           type="button"
-          onClick={() => nav('/delete_files')}
-        >
-          Delete Essays
-        </button>
-        <button
-          style={{
-            fontFamily: 'Raleway',
-            backgroundColor: '#FFFFFF',
-            color: 'black',
-            marginRight: '16px',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            width: 400,
-            margin: 16,
-          }}
-          type="button"
           onClick={() => nav('/')}
         >
           Sign Out

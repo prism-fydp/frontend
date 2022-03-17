@@ -2,7 +2,7 @@
 /* eslint-disable promise/always-return */
 import { DefaultUser, User } from 'renderer/types';
 import { gql, useMutation } from '@apollo/client';
-import sanitizeUser from 'renderer/utils/sanitize';
+import { sanitizeUser } from 'renderer/utils/sanitize';
 
 export default function useCreateUser(
   onCompleted: (user: User) => void

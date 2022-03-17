@@ -8,7 +8,6 @@ import Dashboard from '../pages/dashboard';
 import Login from '../pages/login';
 import Settings from '../pages/settings';
 import Search from '../pages/search';
-import DeleteFiles from '../pages/delete_files';
 
 export default function AppRoutes() {
   return (
@@ -19,7 +18,6 @@ export default function AppRoutes() {
         <Route path={Paths.LOGIN} component={Login} />
         <Route path={Paths.DASHBOARD} component={Dashboard} />
         <Route path={Paths.SETTINGS} component={Settings} />
-        {/* <Route path={Paths.DELETE} component={DeleteFiles([])} /> */}
         <Route path={Paths.READER} component={MarkdownReader} />
         <Route path={Paths.EDITOR} component={MarkdownEditor} />
         <Route path={Paths.SEARCH} component={Search} />

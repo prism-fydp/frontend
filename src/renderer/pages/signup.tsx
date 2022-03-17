@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import { useSetCurrentUser, useCreateUser } from 'renderer/hooks/user';
 import { sanitizeUser } from 'renderer/utils/sanitize';
 import { useNavigate } from '../hooks/core';
-import Trybutton from '../components/try';
+import NavigationButton from '../components/NavigationButton';
 import Paths from './paths';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -151,7 +151,7 @@ function Signup() {
 
   return (
     <>
-      <Trybutton routepath={Paths.LANDING} buttonText="Back" />
+      <NavigationButton path={-1} label="Back" />
       <form className={classes.container} noValidate autoComplete="off">
         <Card className={classes.card}>
           <CardHeader className={classes.header} title="Sign up" />

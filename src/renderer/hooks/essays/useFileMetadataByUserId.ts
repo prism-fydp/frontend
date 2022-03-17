@@ -24,11 +24,16 @@ const GET_USER_ESSAYS = gql`
 
 export default function useFileMetadataByUserId(
   userId: number,
+  setFileMetadataList: (fileMetadataList: Array<FileMetadata>) => void,
   skip: boolean
 ): FileMetadataResult {
+  const complete = (data: any) => {
+    setFileMetadataList(data.essay.map(sanitizeFileMetadata));
+  };
   const { loading, error, data } = useQuery(GET_USER_ESSAYS, {
     skip,
     variables: { userId },
+    onCompleted: complete,
   });
 
   return {

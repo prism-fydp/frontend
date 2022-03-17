@@ -8,7 +8,6 @@ const enum Paths {
   LOGIN = '/login',
   DASHBOARD = '/dashboard',
   SETTINGS = '/settings',
-  DELETE = '/settings/delete_files',
   SEARCH = '/search',
   READER = '/md-reader',
   EDITOR = '/md-editor',

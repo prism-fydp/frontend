@@ -8,8 +8,14 @@ interface FileMetadataResult {
   fileMetadataList: Array<FileMetadata>;
 }
 
-export default function useWriterFileMetadataList(): FileMetadataResult {
+export default function useWriterFileMetadataList(
+  setFileMetadataList: (fileMetadataList: Array<FileMetadata>) => void
+): FileMetadataResult {
   const currentUser = useCurrentUser();
   const shouldSkip = currentUser.id === DefaultUser.id;
-  return useFileMetadataByUserId(currentUser.id, shouldSkip);
+  return useFileMetadataByUserId(
+    currentUser.id,
+    setFileMetadataList,
+    shouldSkip
+  );
 }
